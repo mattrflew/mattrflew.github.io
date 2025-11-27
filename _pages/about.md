@@ -6,8 +6,8 @@ subtitle: Halifax, NS, Canada
 
 profile:
   align: right
-  image: personal/mrf_ben_lomond.jpeg
-  image_circular: false # crops the image to make it circular
+  image: personal/mrf_ben_lomond.png
+  image_circular: true # crops the image to make it circular
   # more_info: >
     # <p>555 your office number</p>
     # <p>123 your address street</p>
@@ -33,4 +33,4 @@ Put your address / P.O. box / other info right below your picture. You can also 
 
 Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them. -->
 
-Hello! I'm Matt.
+Hello! I'm Matt. This site is a work in progress.
