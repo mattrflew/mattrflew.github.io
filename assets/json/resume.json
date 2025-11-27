@@ -1,5 +1,5 @@
 {
-  "General": {
+  "Basics": {
     "name": "Matt Flewelling",
     "label": "",
     "image": "",
@@ -25,7 +25,7 @@
   "education": [
     {
       "institution": "University of Edinburgh",
-      "location": "Edinburgh, United Kingdom",
+      "location": "Edinburgh, UK",
       "url": "",
       "area": "Computational Applied Mathematics",
       "studyType": "MSc",
@@ -36,7 +36,7 @@
     },
         {
       "institution": "Queen's University",
-      "location": "Kingston, Canada",
+      "location": "Kingston, CAN",
       "url": "",
       "area": "Mechanical Engineering",
       "studyType": "BASc",
