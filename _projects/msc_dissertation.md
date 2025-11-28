@@ -2,7 +2,7 @@
 layout: page
 title: Kalman Tracking for Super-Resolution Ultrasound Imaging
 description: A Kalman-filter-based microbubble tracking pipeline developed for my MSc dissertation at the University of Edinburgh.
-img: assets/img/12.jpg
+img: assets/projects/msc_dissertation/gt_frame_0001_no_detections.pdf
 redirect:
 importance: 1
 category: ""
