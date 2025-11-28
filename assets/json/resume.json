@@ -1,7 +1,7 @@
 {
   "basics": {
     "name": "Matt Flewelling",
-    "label": "Test",
+    "label": "",
     "image": "",
     "email": "flewellingmatt@gmail.com",
     "phone": "",
@@ -32,18 +32,18 @@
       "startDate": "2024",
       "endDate": "2025",
       "score": "",
-      "courses": ""
+      "courses": []
     },
         {
       "institution": "Queen's University",
-      "location": "Kingston, CAN",
+      "location": "Kingston, CA",
       "url": "",
       "area": "Mechanical Engineering",
       "studyType": "BASc",
       "startDate": "2016",
       "endDate": "2021",
       "score": "",
-      "courses": ""
+      "courses": []
     }
   ],
     "work": [
