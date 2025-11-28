@@ -33,4 +33,8 @@ Put your address / P.O. box / other info right below your picture. You can also 
 
 Link to your social media connections, too. This theme is set up to use [Font Awesome icons](https://fontawesome.com/) and [Academicons](https://jpswalsh.github.io/academicons/), like the ones below. Add your Facebook, Twitter, LinkedIn, Google Scholar, or just disable all of them. -->
 
-Hello! I'm Matt. This site is a work in progress.
+Hello! I'm Matt. 
+
+I recently completed an MSc in Computational Applied Mathematics at the University of Edinburgh. 
+
+This site is a work in progress, with more projects coming soon!
