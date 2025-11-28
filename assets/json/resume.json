@@ -1,17 +1,17 @@
 {
   "basics": {
     "name": "Matt Flewelling",
-    "label": "",
+    "label": "Test",
     "image": "",
-    "contact": "flewellingmatt@gmail.com",
+    "email": "flewellingmatt@gmail.com",
     "phone": "",
     "url": "",
     "summary": "",
     "location": {
       "address": "",
       "postalCode": "",
-      "city": "",
-      "countryCode": "",
+      "city": "Halifax",
+      "countryCode": "CA",
       "region": ""
     },
     "profiles": [
@@ -32,7 +32,7 @@
       "startDate": "2024",
       "endDate": "2025",
       "score": "",
-      "courses": []
+      "courses": ""
     },
         {
       "institution": "Queen's University",
@@ -43,7 +43,7 @@
       "startDate": "2016",
       "endDate": "2021",
       "score": "",
-      "courses": []
+      "courses": ""
     }
   ],
     "work": [
@@ -55,7 +55,7 @@
       "endDate": "2023",
       "summary": "",
       "highlights": [],
-      "location": "Halifax, CAN"
+      "location": "Halifax, CA"
     },
         {
       "name": "Marimetrics Technologies",
@@ -65,7 +65,7 @@
       "endDate": "2022",
       "summary": "",
       "highlights": [],
-      "location": "Halifax, CAN" 
+      "location": "Halifax, CA" 
     }
   ]
 }
