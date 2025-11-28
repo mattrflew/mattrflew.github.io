@@ -11,7 +11,7 @@ ninja.data = [{
     },
   },{id: "nav-projects",
           title: "projects",
-          description: "A few things I&#39;ve worked on",
+          description: "A few things I&#39;ve worked on. More on the way!",
           section: "Navigation",
           handler: () => {
             window.location.href = "/projects/";
@@ -402,11 +402,11 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-msc-dissertation",
-          title: 'MSc Dissertation',
-          description: "with background image",
+          section: "News",},{id: "projects-kalman-tracking-for-super-resolution-ultrasound-imaging",
+          title: 'Kalman Tracking for Super-Resolution Ultrasound Imaging',
+          description: "A Kalman-filter-based microbubble tracking pipeline developed for my MSc dissertation at the University of Edinburgh.",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/1_project/";
+              window.location.href = "/projects/msc_dissertation/";
             },},{
         id: 'social-email',
         title: 'email',
