@@ -404,7 +404,7 @@ ninja.data = [{
           description: "",
           section: "News",},{id: "projects-advent-of-code-2025",
           title: 'Advent of Code 2025',
-          description: "To continue improving my Python skills, I am solving the Advent of Code challenges.",
+          description: "Solving the Advent of Code challenges to improve my Python skills.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/aoc_2025/";
             },},{id: "projects-kalman-tracking-for-super-resolution-ultrasound-imaging",
