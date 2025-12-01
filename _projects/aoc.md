@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Advent of Code 2025
+title: Advent of Code
 description: Solving the Advent of Code challenges to improve my Python skills. 
 img:
 redirect:
