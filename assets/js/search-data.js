@@ -402,11 +402,11 @@ ninja.data = [{
             },},{id: "news-a-simple-inline-announcement-with-markdown-emoji-sparkles-smile",
           title: 'A simple inline announcement with Markdown emoji! :sparkles: :smile:',
           description: "",
-          section: "News",},{id: "projects-advent-of-code-2025",
-          title: 'Advent of Code 2025',
+          section: "News",},{id: "projects-advent-of-code",
+          title: 'Advent of Code',
           description: "Solving the Advent of Code challenges to improve my Python skills.",
           section: "Projects",handler: () => {
-              window.location.href = "/projects/aoc_2025/";
+              window.location.href = "/projects/aoc/";
             },},{id: "projects-kalman-tracking-for-super-resolution-ultrasound-imaging",
           title: 'Kalman Tracking for Super-Resolution Ultrasound Imaging',
           description: "A Kalman-filter-based microbubble tracking pipeline developed for my MSc dissertation at the University of Edinburgh.",
