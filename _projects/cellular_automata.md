@@ -27,7 +27,7 @@ This project is a collection of some cellular automata simulations I implemented
 Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). Cells live, die, and reproduce based on the state of their neighbours and produces endless fascinating patterns.
 
 <p align="center">
-  <img src="/assets/img/projects/cellular_automata/game_of_life.gif"
+  <img src="/assets/projects/cellular_automata/game_of_life.gif"
        alt="Conway's Game of Life"
       style="max-width:100%; width:600px; height:auto;"
       loading="lazy">
@@ -37,13 +37,13 @@ Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/w
 # Falling Sand
 A simple particle simulation where local rules approximate gravity, allowing sand to fall and pile up.
 <p align="center">
-  <img src="/assets/img/projects/cellular_automata/falling_sand.gif"
+  <img src="/assets/projects/cellular_automata/falling_sand.gif"
        alt="Falling Sand"
         style="max-width:100%; width:600px; height:auto;"
         loading="lazy">
 </p>
 
-![Alt text for your GIF](/assets/img/projects/cellular_automata/falling_sand.gif)
+![Alt text for your GIF](/assets/projects/cellular_automata/falling_sand.gif)
 
 # Waves
 
@@ -51,7 +51,7 @@ A simulation where each cell distributes its intensity stochastically to neighbo
 
 <p align="center">
   <img
-    src="/assets/img/projects/cellular_automata/waves.gif"
+    src="/assets/projects/cellular_automata/waves.gif"
     alt="Waves"
     style="max-width:100%; width:600px; height:auto;"
     loading="lazy">
