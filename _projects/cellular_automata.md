@@ -29,21 +29,10 @@ Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/w
 <p align="center">
   <img src="/assets/projects/cellular_automata/game_of_life.gif"
        alt="Conway's Game of Life"
-      style="max-width:100%; width:600px; height:auto;"
+      style="max-width:80%; width:600px; height:auto;"
       loading="lazy">
 </p>
 
-
-# Falling Sand
-A simple particle simulation where local rules approximate gravity, allowing sand to fall and pile up.
-<p align="center">
-  <img src="/assets/projects/cellular_automata/falling_sand.gif"
-       alt="Falling Sand"
-        style="max-width:100%; width:600px; height:auto;"
-        loading="lazy">
-</p>
-
-![Alt text for your GIF](/assets/projects/cellular_automata/falling_sand.gif)
 
 # Waves
 
@@ -53,6 +42,15 @@ A simulation where each cell distributes its intensity stochastically to neighbo
   <img
     src="/assets/projects/cellular_automata/waves.gif"
     alt="Waves"
-    style="max-width:100%; width:600px; height:auto;"
+    style="max-width:80%; width:600px; height:auto;"
     loading="lazy">
+</p>
+
+# Falling Sand
+A simple particle simulation where local rules approximate gravity, allowing sand to fall and pile up.
+<p align="center">
+  <img src="/assets/projects/cellular_automata/falling_sand.gif"
+       alt="Falling Sand"
+        style="max-width:80%; width:600px; height:auto;"
+        loading="lazy">
 </p>
