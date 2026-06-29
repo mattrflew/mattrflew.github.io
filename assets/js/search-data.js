@@ -407,11 +407,21 @@ ninja.data = [{
           description: "Solving the Advent of Code challenges to improve my Python skills.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/aoc/";
+            },},{id: "projects-cellular-automata",
+          title: 'Cellular Automata',
+          description: "Object-oriented Python implementations of cellular automata from scratch.",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/cellular_automata/";
             },},{id: "projects-kalman-tracking-for-super-resolution-ultrasound-imaging",
           title: 'Kalman Tracking for Super-Resolution Ultrasound Imaging',
           description: "A Kalman-filter-based microbubble tracking pipeline developed for my MSc dissertation at the University of Edinburgh.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/msc_dissertation/";
+            },},{id: "projects-nhl-playoff-pool-optimizer",
+          title: 'NHL Playoff Pool Optimizer',
+          description: "Test",
+          section: "Projects",handler: () => {
+              window.location.href = "/projects/nhl_playoffs/";
             },},{
         id: 'social-email',
         title: 'email',
