@@ -13,7 +13,7 @@ related_publications: false
 <p>
   <a href="https://github.com/mattrflew/cellular-automata" target="_blank" rel="noopener">
     <i class="fa-brands fa-github fa-2x"></i>
-    &nbsp; View GitHub Repo
+    &nbsp; View Code on GitHub
   </a>
 </p>
 
@@ -42,6 +42,8 @@ A simple particle simulation where local rules approximate gravity, allowing san
         style="max-width:100%; width:600px; height:auto;"
         loading="lazy">
 </p>
+
+![Alt text for your GIF](/assets/img/projects/cellular_automata/falling_sand.gif)
 
 # Waves
 
