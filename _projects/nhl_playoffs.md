@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: page
 title: Building an NHL Playoff Pool Optimizer with Python
 description: An end-to-end sports analytics project combining data engineering, statistical modelling, Monte Carlo simulation, and mixed-integer linear programming to optimize an NHL playoff pool roster.
 img:
