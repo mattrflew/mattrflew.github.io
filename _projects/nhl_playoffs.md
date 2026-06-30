@@ -29,8 +29,6 @@ Every year, my family runs an NHL Stanley Cup playoff pool. Participants draft a
 
 At first glance, choosing the best roster seems simple: pick the league's best players from the best teams. In reality, team performance is inherently hard to predict and individual player performance depends heavily on how long their teams survive in the playoffs. For example, a star player whose team is eliminated in the first round is worth less than a middle of the pack player who makes it to the finals. This makes roster selection an interesting problem involving prediction, uncertainty, and optimization.
 
-Naturally, this called for an unnecessarily complicated solution.
-
 This project is a system with the objective to:
 
 1. Simulate playoff bracket outcomes (Elo Ranking & Monte Carlo Methods)
@@ -109,49 +107,6 @@ params = {
 data = api.get_team_roster_stats(params)
 ```
 
-```c++
-int main(int argc, char const \*argv[])
-{
-    string myString;
-
-    cout << "input a string: ";
-    getline(cin, myString);
-    int length = myString.length();
-
-    char charArray = new char * [length];
-
-    charArray = myString;
-    for(int i = 0; i < length; ++i){
-        cout << charArray[i] << " ";
-    }
-
-    return 0;
-}
-```
-
-{% highlight python %}
-import pandas as pd
-import plotly.express as px
-df = pd.read_csv(
-'https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv'
-)
-fig = px.density_mapbox(
-df,
-lat='Latitude',
-lon='Longitude',
-z='Magnitude',
-radius=10,
-center=dict(lat=0, lon=180),
-zoom=0,
-mapbox_style="stamen-terrain",
-)
-fig.show()
-fig.write_html('assets/plotly/demo.html')
-{% endhighlight %}
-
-
-
-
 The library first checks if the requested data already exists in a local cache. If so, the cached response is returned immediately. Otherwise, the request is sent to the NHL API, the response is stored as a compressed JSON file, and the downloaded data is returned. The caching system was created to avoid unnecessary network requests, as it can be timely collecting a large number of records.
 
 The processing of data was handled by scripts, which take the raw JSON files and the nested API responses are flattened and standardized into tables such as:
@@ -179,8 +134,6 @@ A notebook detailing the Elo implementation is available [here](https://github.c
 ### The Elo Rating System
 
 The Elo rating system is a method for calculating the skill or strength of a player/team relative to their competitors. The difference in ratings between two teams can be a predictor of the outcome of the game. Two teams with equal rating playing each other are expected to have an equal number of wins. A team with a higher rating is more likely to win against a lower rated opponent.
-
-At the start of a season, each team will be initialized to the same rating, $R$. 
 
 #### Algorithms
 The basic Elo system is defined by two algorithms.
@@ -309,6 +262,8 @@ where $h_{adv}$, $G$, and $M$ are the home-ice, goal differential, and overtime/
 
 ### Calculating Elo ratings
 
+At the start of a season, each team will be initialized to the same rating, $R$. 
+
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
@@ -319,3 +274,26 @@ where $h_{adv}$, $G$, and $M$ are the home-ice, goal differential, and overtime/
 # Results
 
 # Future Work
+There are two key areas that I think will improve my chances in the playoff pool:
+1. Strategy around the optimization problem
+2. Improving playoff bracket simulations
+
+The strategy above involved some hedging where the final roster contained players from 7 distinct teams. This was good to gain points from the top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each round. However, half of the winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that I can only select players from a maximum of, let's say 2-4 distinct teams. This way I can hopefully continuing to gather more fantasy points just by nature of more of my players being in more games. 
+
+Of course, this more aggressive strategy only works if my bracket simulations are good. In development of the of the Elo rating system and Monte Carlo simulation framework, I had some ideas which would be interesting to try and see if it improves the predictions:
+
+- A
+- B
+
+And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. More development time could lead to a more accurate prediction for playoff performance.  
+
+However, I think the benefit gained from this will not be as significant as the playoff prediction portion. Let's say I have the constraint that I only want to pick players from two teams. In this case, a machine learning algorithm will probably just recommend to pick the players on the two teams which had the best regular season performance (about the same as what I implemented this year). The two methods would likely have different expected values per player, but if we constrain the optimization problem so much down to two teams it probably would end up with very similar rosters. At the very least, a more sophisticated expected value methodology is unlikely to be worse than what I did this year, so I will keep it as a secondary objective moving forward.  
+
+In the end though, this is just a fun family competition and I hope they do not mind too much that I am borderline cheating, even if I am still losing.
+
+<p>
+  <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer" target="_blank" rel="noopener">
+    <i class="fa-brands fa-github fa-2x"></i>
+    &nbsp; View Code on GitHub
+  </a>
+</p>
