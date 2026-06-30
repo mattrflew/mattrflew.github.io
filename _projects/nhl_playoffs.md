@@ -16,7 +16,7 @@ TEST
 <p>
   <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer" target="_blank" rel="noopener">
     <i class="fa-brands fa-github fa-2x"></i>
-    &nbsp; View GitHub Repo
+    &nbsp; View Code on GitHub
   </a>
 </p>
 

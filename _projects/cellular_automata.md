@@ -26,53 +26,34 @@ This project is a collection of some cellular automata simulations I implemented
 # Conway's Game of Life
 Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). Cells live, die, and reproduce based on the state of their neighbours and produces endless fascinating patterns.
 
-<p align="center">
-  <img src="/assets/projects/cellular_automata/game_of_life.gif"
-       alt="Conway's Game of Life"
-      style="max-width:70%; width:600px; height:auto;"
-      loading="lazy">
-</p>
+<div class="text-center">
+  {% include figure.liquid
+     path="assets/projects/cellular_automata/game_of_life.gif"
+     width="65%"
+     class="img-fluid rounded z-depth-1"
+     zoomable=true %}
+</div>
 
 
 # Waves
 
 A simulation where each cell distributes its intensity stochastically to neighbouring cells with wrap-around boundaries, producing ripple like patterns.
 
-<p align="center">
-  <img
-    src="/assets/projects/cellular_automata/waves.gif"
-    alt="Waves"
-    style="max-width:70%; width:600px; height:auto;"
-    loading="lazy">
-</p>
-
-# Falling Sand
-A simple particle simulation where local rules approximate gravity, allowing sand to fall and pile up.
-<p align="center">
-  <img src="/assets/projects/cellular_automata/falling_sand.gif"
-       alt="Falling Sand"
-        style="max-width:70%; width:600px; height:auto;"
-        loading="lazy">
-</p>
-
-
-{% include figure.liquid
-   path="/assets/projects/cellular_automata/waves.gif"
-   class="img-fluid rounded z-depth-1"
-   zoomable=true %}
-
-
-  <a href="{{ '/assets/projects/cellular_automata/waves.gif' | relative_url }}"
-   class="popup img-link">
-  <img
-    src="{{ '/assets/projects/cellular_automata/waves.gif' | relative_url }}"
-    class="img-fluid rounded z-depth-1">
-</a>
-
 <div class="text-center">
   {% include figure.liquid
      path="assets/projects/cellular_automata/waves.gif"
-     width="70%"
+     width="65%"
+     class="img-fluid rounded z-depth-1"
+     zoomable=true %}
+</div>
+
+# Falling Sand
+
+A simple particle simulation where local rules approximate gravity, allowing sand to fall and pile up.
+<div class="text-center">
+  {% include figure.liquid
+     path="assets/projects/cellular_automata/falling_sand.gif"
+     width="65%"
      class="img-fluid rounded z-depth-1"
      zoomable=true %}
 </div>
