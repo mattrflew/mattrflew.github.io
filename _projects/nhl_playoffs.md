@@ -95,7 +95,6 @@ This allows the analysis code to remain concise and modular to fit the needs of 
 
 For example, retrieving the statistics for an entire team's roster requires only a few lines of code:
 
-````markdown
 ```python
 from nhl_pool.dataset.api import NHLAPI
 
@@ -109,21 +108,48 @@ params = {
 
 data = api.get_team_roster_stats(params)
 ```
-````
 
-```python
-from nhl_pool.dataset.api import NHLAPI
+```c++
+int main(int argc, char const \*argv[])
+{
+    string myString;
 
-api = NHLAPI()
+    cout << "input a string: ";
+    getline(cin, myString);
+    int length = myString.length();
 
-params = {
-    "abbrev": "MTL",
-    "season": 20252026,
-    "season_type": 2
+    char charArray = new char * [length];
+
+    charArray = myString;
+    for(int i = 0; i < length; ++i){
+        cout << charArray[i] << " ";
+    }
+
+    return 0;
 }
-
-data = api.get_team_roster_stats(params)
 ```
+
+{% highlight python %}
+import pandas as pd
+import plotly.express as px
+df = pd.read_csv(
+'https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv'
+)
+fig = px.density_mapbox(
+df,
+lat='Latitude',
+lon='Longitude',
+z='Magnitude',
+radius=10,
+center=dict(lat=0, lon=180),
+zoom=0,
+mapbox_style="stamen-terrain",
+)
+fig.show()
+fig.write_html('assets/plotly/demo.html')
+{% endhighlight %}
+
+
 
 
 The library first checks if the requested data already exists in a local cache. If so, the cached response is returned immediately. Otherwise, the request is sent to the NHL API, the response is stored as a compressed JSON file, and the downloaded data is returned. The caching system was created to avoid unnecessary network requests, as it can be timely collecting a large number of records.
