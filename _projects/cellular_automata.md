@@ -54,3 +54,17 @@ A simple particle simulation where local rules approximate gravity, allowing san
         style="max-width:70%; width:600px; height:auto;"
         loading="lazy">
 </p>
+
+
+{% include figure.liquid
+   path="/assets/projects/cellular_automata/waves.gif"
+   class="img-fluid rounded z-depth-1"
+   zoomable=true %}
+
+
+  <a href="{{ '/assets/projects/cellular_automata/waves.gif' | relative_url }}"
+   class="popup img-link">
+  <img
+    src="{{ '/assets/projects/cellular_automata/waves.gif' | relative_url }}"
+    class="img-fluid rounded z-depth-1">
+</a>
