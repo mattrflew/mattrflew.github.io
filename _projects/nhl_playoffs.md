@@ -260,12 +260,64 @@ $$
 
 where $h_{adv}$, $G$, and $M$ are the home-ice, goal differential, and overtime/shootout modifiers defined previously.
 
-### Calculating Elo ratings
+### Calculating Elo Ratings
 
-At the start of a season, each team will be initialized to the same rating, $R$. 
+At the start of a season, each team will be initialized to the same rating, $R=1500$. 
 
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
+
+We can begin this section by acknowledging how difficult it is to accurately predict playoff bracket winners due to the inherent uncertainty associated with each series. Even under the simple assumptions that every playoff series is a fair coin flip, there are 
+
+Predicting the outcome of the Stanley Cup Playoffs is inherently difficult due to the uncertainty associated with each playoff series. Even under the simplistic assumption that every series is an independent fair coin flip, there are
+
+- Round 1: 8 series
+- Round 2: 4 series
+- Round 3: 2 series
+- Stanley Cup Playoffs: 1 series
+
+for a total 15 series, giving $2^{15}= 32,768$ possible playoff brackets. 
+
+Of course, playoff series are far from a coin flip-type result. Stronger teams are more likely to advance, and each possible bracket has a different probability of occuring based on the competing team strengths. Rather than attempting to predict a single "correct" bracket, this project instead simulates the playoffs thousands of times using the Elo derived win probabilities for each matchup. 
+
+Aggregating the results of these simulations provides estimates of each team's probability of advancing through every playoff round, ultimately allowing us to estimate the expect number of playoff games played by every team.
+
+### Monte Carlo Methods
+
+At a high level, a Monte Carlo simulation is a computational algorithm that uses repeated random sampling to obtain the likelihood of a range of results of occuring. They are a way to model the probability of different outcomes of a process that can not be easily predicted.
+
+### Simulating One Game
+```python
+import numpy as np
+
+def elo_compute_win_probability(R_h, R_a, h_adv=30):
+    '''
+    Given the Elo ratings for the home and away teams (h and a), compute the probability team h wins. 
+    h_adv is the home team advantage factor.
+    '''
+    return 1.0 / (1.0 + 10**((R_a - (R_h + h_adv))/400.0))
+    
+def simulate_game(R_h, R_a, rng, h_adv=30):
+    '''
+    Returns a boolean 1 if home team won, otherwise home team lost.
+    '''
+    
+    # Calculate the win probability
+    p_home_win = elo_compute_win_probability(R_h, R_a, h_adv=h_adv)
+    
+    # Random number
+    u = rng.random()
+    
+    return u < p_home_win
+```
+
+### Simulating the Entire Playoffs
+
+#### Updating Elo During Simulation
+Instead of holding the ratings static, for a playoff simulation we can update Elo ratings (using the update rules explained in a [previous section](#putting-it-all-together)) based on the simulated outcomes on each game in the simulation. This way we can try and capture team strength throughout the playoffs, for example a team going on a postseason hot streak, rather than holding ratings static at the end of the regular season. For subsequent next playoff simulations, the ratings will reset to the team's base ratings to provide a fresh simulation which is independent of previous ones.
+
+#### Results
+
 
 # Estimating Player Value
 
@@ -278,12 +330,15 @@ There are two key areas that I think will improve my chances in the playoff pool
 1. Strategy around the optimization problem
 2. Improving playoff bracket simulations
 
-The strategy above involved some hedging where the final roster contained players from 7 distinct teams. This was good to gain points from the top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each round. However, half of the winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that I can only select players from a maximum of, let's say 2-4 distinct teams. This way I can hopefully continuing to gather more fantasy points just by nature of more of my players being in more games. 
+The strategy above involved some hedging where the final roster contained players from 7 distinct teams. 
 
-Of course, this more aggressive strategy only works if my bracket simulations are good. In development of the of the Elo rating system and Monte Carlo simulation framework, I had some ideas which would be interesting to try and see if it improves the predictions:
+My optimized roster this year contained players from 7 distinct teams. This was a good to gain points from top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each consecutive round. In contrast, half of the playoff pool's winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that an optimized roster can only contain players from, let's say, 2-4 distinct teams. This way I can hopefully continue to gather more fantasy points just by nature of my players being in more games and opportunities to score points. In the scenario of only chosing players from two teams, I could extend constraint by requiring the two teams be from different conferences as the Stanley Cup Finals features a team from each conference.
 
-- A
-- B
+Of course, this more aggressive strategy only works if my bracket simulations are good and I can predict which teams will have deep playoff runs. In development of the of the Elo rating system and Monte Carlo simulation framework, I had some ideas which would be interesting to try and see if it improves the predictions:
+
+- Apply a grid-serach style of paramater optimization for $K$, $G$, and $M$ in the Elo rating system.
+- Calculate Elo rating over a small number of seasons, acknowledging that teams do not start at the same strength at the beginning of each season. Teams are likely to carry over some of their momentum or strength season over season, and the Elo framework could represent that.
+- Add per game performance variability as a randomness factor. Any sport is difficult to model and unexpected outcomes regularly occur, so if we added a fitted amount of noise to each game's simulation we could potentially improve the overall predictions.
 
 And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. More development time could lead to a more accurate prediction for playoff performance.  
 
