@@ -21,7 +21,7 @@ related_publications: false
 
 Cellular automata are discrete mathematical models in which each cell in a grid evolves according to a simple set of local rules. Despite their simplicity, these rules can generate surprisingly complex behaviour. The [Wikipedia page](https://en.wikipedia.org/wiki/Cellular_automaton) is a fun read with interesting examples.
 
-This project is a collection of some cellular automata simulations I implemented from scratch in Python using an object-oriented approach. While there are some genuine applications of cellular automata, this was just a fun exercise to make some cool patterns! Refresh the page to reload the gifs, or see them directly on GitHub.
+This project is a collection of some cellular automata simulations I implemented from scratch in Python using an object-oriented approach. While there are some genuine applications of cellular automata, this was just a fun exercise to make some cool patterns. Refresh the page to reload the gifs, or see them directly on GitHub.
 
 # Conway's Game of Life
 Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life). Cells live, die, and reproduce based on the state of their neighbours and produces endless fascinating patterns.
@@ -29,7 +29,7 @@ Implementation of the classic [Conway's Game of Life](https://en.wikipedia.org/w
 <div class="text-center">
   {% include figure.liquid
      path="assets/projects/cellular_automata/game_of_life.gif"
-     width="65%"
+     width="50%"
      class="img-fluid rounded z-depth-1"
      zoomable=true %}
 </div>
