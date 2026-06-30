@@ -80,8 +80,8 @@ The NHL provides two public APIs to access player statistics, game results, stan
 
 Fortunately, there are two useful community-maintained documentations of these APIs:
 
-- https://github.com/Zmalski/NHL-API-Reference
-- https://gitlab.com/dword4/nhlapi/-/blob/master/new-api.md
+- [github.com/Zmalski/NHL-API-Reference](https://github.com/Zmalski/NHL-API-Reference)
+- [gitlab.com/dword4/nhlapi/-/blob/master/new-api.md](https://gitlab.com/dword4/nhlapi/-/blob/master/new-api.md)
 
 Rather than interacting with API endpoints directly throughout the project, I developed a small Python library to provide a clean interface for data collection. The library is responsible for:
 
@@ -94,6 +94,22 @@ Rather than interacting with API endpoints directly throughout the project, I de
 This allows the analysis code to remain concise and modular to fit the needs of the project. 
 
 For example, retrieving the statistics for an entire team's roster requires only a few lines of code:
+
+````markdown
+```python
+from nhl_pool.dataset.api import NHLAPI
+
+api = NHLAPI()
+
+params = {
+    "abbrev": "MTL",
+    "season": 20252026,
+    "season_type": 2
+}
+
+data = api.get_team_roster_stats(params)
+```
+````
 
 ```python
 from nhl_pool.dataset.api import NHLAPI
@@ -108,6 +124,8 @@ params = {
 
 data = api.get_team_roster_stats(params)
 ```
+
+
 The library first checks if the requested data already exists in a local cache. If so, the cached response is returned immediately. Otherwise, the request is sent to the NHL API, the response is stored as a compressed JSON file, and the downloaded data is returned. The caching system was created to avoid unnecessary network requests, as it can be timely collecting a large number of records.
 
 The processing of data was handled by scripts, which take the raw JSON files and the nested API responses are flattened and standardized into tables such as:
