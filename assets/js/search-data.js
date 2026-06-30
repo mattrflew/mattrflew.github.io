@@ -417,9 +417,9 @@ ninja.data = [{
           description: "A Kalman-filter-based microbubble tracking pipeline developed for my MSc dissertation at the University of Edinburgh.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/msc_dissertation/";
-            },},{id: "projects-nhl-playoff-pool-optimizer",
-          title: 'NHL Playoff Pool Optimizer',
-          description: "Test",
+            },},{id: "projects-building-an-nhl-playoff-pool-optimizer-with-python",
+          title: 'Building an NHL Playoff Pool Optimizer with Python',
+          description: "An end-to-end sports analytics project combining data engineering, statistical modelling, Monte Carlo simulation, and mixed-integer linear programming to optimize an NHL playoff pool roster.",
           section: "Projects",handler: () => {
               window.location.href = "/projects/nhl_playoffs/";
             },},{
