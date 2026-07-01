@@ -31,7 +31,7 @@ At first glance, choosing the best roster seems simple: pick the league's best p
 
 This project is a system with the objective to:
 
-1. Simulate playoff bracket outcomes (Elo Ranking & Monte Carlo Methods)
+1. Simulate playoff bracket outcomes (Elo Rating & Monte Carlo Methods)
 2. Estimate each player's expected playoff value (Statistical Modelling)
 3. Select an optimal fantasy roster (Linear Programming/Optimization)
 4. And most importantly, win the playoff pool (Bragging Rights).
@@ -175,14 +175,14 @@ The formulation above outlines the basic Elo system, but a number of additions c
 #### Home Team Advantage
 In sports there is said to be a benefit to the home team when they play at their home location. 
 
-Examining the results of all regular season NHL games between 2010-2025 showed that the home team won 54.10% of the time, demonstrating a slight advantage to the home team. We can try to account for this in the Elo ranking by giving the home team a slight rating boost, $h_{adv}$.
+Examining the results of all regular season NHL games between 2010-2025 showed that the home team won 54.10% of the time, demonstrating a slight advantage to the home team. We can try to account for this in the Elo ratings by giving the home team a slight rating boost, $h_{adv}$.
 
 If we have two teams of equal strength, $R_A=R_B$ but the home team gets a boost of $h_{adv}$, then the expected home advantage with probablity is (if $A$ is home team):
 $$
 E_H = \frac{1}{1 + 10 ^ {\frac{R_B - (R_A+h_{adv})}{400}}} = \frac{1}{1 + 10 ^ {\frac{-h_{adv}}{400}}},
 $$
 
-Given the above analysis, $E_H = 0.5423$, so we can solve for $h_{adv}$, giving:
+Given the above analysis, $E_H = 0.5410$, so we can solve for $h_{adv}$, giving:
 
 $$
 h_{adv} = -400\text{log}_{10}\left(\frac{1}{E_H} - 1 \right)
@@ -197,13 +197,13 @@ This value is used when calculating Elo ratings in regular season games.
 For playoff games over the same time frame the home team only won 51.31% of the time, corresponding to $h_{adv} \approx 11$. 
 
 #### Goal Differential
-If a particular game was a blowout for example, we want the rating changes to reflect this as it could indicate one team is significantly stronger than the other. The World Football Elo Ratings have something called a "Goal Index", $G$, where the number of goals is taken into account. Football (soccer) scores are typically lower than hockey, so we'll modify their update logic slightly. 
+If a particular game was a blowout for example, we want the rating changes to reflect this as it could indicate one team is significantly stronger than the other. The [World Football Elo Ratings](https://en.wikipedia.org/wiki/World_Football_Elo_Ratings#Number_of_goals) have something called a "Goal Index", $G$, where the number of goals between the winning and losing teams is taken into account. Football (soccer) scores are typically lower than hockey, so we'll modify their update logic slightly. 
 
 For all regular season games in the dataset, I calculated the goal differential between the winning and losing teams.
 
 ![Goal differential of all regular season NHL games (2010-2025)](/assets/projects/nhl_playoff_pool/goal_differential.png)
 
-We see that approximately 60% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. We also see that outliers begin after a goal differential of 6. Considering this analysis, we can implement some logic for our goal index, $G$ with goal differential represented as $N = |\text{goalDiff}|$.
+We see that approximately 60% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparitively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
 
 $$
 G = \begin{cases} 
@@ -267,9 +267,10 @@ At the start of a season, each team will be initialized to the same rating, $R=1
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
-We can begin this section by acknowledging how difficult it is to accurately predict playoff bracket winners due to the inherent uncertainty associated with each series. Even under the simple assumptions that every playoff series is a fair coin flip, there are 
+A notebook detailing the playoff simulation framework is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb). 
 
-Predicting the outcome of the Stanley Cup Playoffs is inherently difficult due to the uncertainty associated with each playoff series. Even under the simplistic assumption that every series is an independent fair coin flip, there are
+
+We can begin this section by acknowledging how difficult it is to accurately predict playoff bracket winners due to the inherent uncertainty associated with each series. Even under the simple assumptions that every playoff series is a fair coin flip, there are 
 
 - Round 1: 8 series
 - Round 2: 4 series
@@ -318,19 +319,115 @@ Instead of holding the ratings static, for a playoff simulation we can update El
 
 #### Results
 
+The table below summarizes the ten highest-rated teams according to the Elo system. For comparison, the final regular season league ranking is also shown.
+
+| Team | Elo Rating | Elo Rank | Regular Season Standing |
+|:----:|-----------:|:--------:|:---------:|
+| CAR | 1617.92 | 1 | 2 |
+| BUF | 1613.01 | 2 | 4 |
+| COL | 1603.33 | 3 | 1 |
+| MTL | 1588.70 | 4 | 5 |
+| OTT | 1576.24 | 5 | 9 |
+| DAL | 1575.09 | 6 | 3 |
+| TBL | 1572.35 | 7 | 5 |
+| WSH | 1546.24 | 8 | 12 |
+| MIN | 1544.06 | 9 | 7 |
+| PHI | 1542.90 | 10 | 10 |
+
+> Elo vs standings figure
+
+> Elo vs points figure
 
 # Estimating Player Value
 
+The expected value $v$ of a skater $i$ will be defined as:
+$$
+\mathbb{E}[v_i] = 2 \times \mathbb{E}[G_i] + 1 \times \mathbb{E}[A_i], 
+$$
+
+
 # Optimizing the Roster
+A notebook detailing the roster optimization implementation is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb). 
+
+
+## The Final Roster
+
+Finally, with all of the components of the project, running the linear programming optimizer yielded the following roster.
+
+| Position | Player | Team | Expected Games | Value/Game | Expected Points |
+|:--------:|:-------|:----:|---------------:|----------:|----------------:|
+| **FORWARD** | | | | | |
+| F | Nathan MacKinnon | COL | 15.35 | 2.25 | **34.54** |
+| F | Martin Necas | COL | 15.35 | 1.77 | **27.16** |
+| F | Connor McDavid | EDM | 11.43 | 2.27 | **25.93** |
+| F | Leaon Draisaitl | EDM | 11.43 | 2.03 | **23.21** |
+| F | Nikita Kucherov | TBL | 10.08 | 2.29 | **23.09** |
+| F | Jason Robertson | DAL | 11.80 | 1.72 | **20.30** |
+| F | Tage Thomspon | BUF | 13.34 | 1.49 | **19.92** |
+| F | Cole Caufield | MTL | 11.11 | 1.72 | **19.08** |
+| F | Wyatt Johnston | DAL | 11.80 | 1.60 | **18.86** |
+| **DEFENCE** | | | | | |
+| D | Cale Makar | COL | 15.35 | 1.32 | **20.26** |
+| D | Evan Bouchard | EDM | 11.43 | 1.41 | **16.17** |
+| D | Rasmus Dahlin | BUF | 13.34 | 1.21 | **16.11** |
+| D | Shayne Gostisbehere | CAR | 13.22 | 1.15 | **15.14** |
+| D | Darren Raddysh | TBL | 10.08 | 1.26 | **12.71** |
+| D | Lane Hutson | MTL | 11.11 | 1.10 | **12.20** |
+| **GOALIE** | | | | | |
+| G | Scott Wedgewood | COL | 15.35 | 0.89 | **13.65** |
+| G | Brandon Bussi | CAR | 13.22 | 0.92 | **12.20** |
+|  |  |  |  | | | 
+|  |  |  |  | *Total Expected* | **330.52** |
+
+> **Projected Team Total:** **330.52 fantasy points**
+
+
+
+
+| Team | Players Selected |
+|:----:|-----------------:|
+| COL | 4 |
+| EDM | 3 |
+| DAL | 2 |
+| BUF | 2 |
+| MTL | 2 |
+| TBL | 2 |
+| CAR | 2 |
+| *Total* | **17 Players** |
 
 # Results
 
-# Future Work
+| Pos | Player | Team | Exp. Games | Actual Games | Exp. Points | Actual Points | Prediction Error |
+|:---:|:-------|:----:|-----------:|-------------:|------------:|--------------:|---------:|
+| **FORWARDS** | | | | | | | |
+| F | Nathan MacKinnon | COL | 15.35 | 13 | 34.54 | 22 | -12.54 |
+| F | Martin Necas | COL | 15.35 | 13 | 27.16 | 14 | -13.16 |
+| F | Connor McDavid | EDM | 11.43 | 6 | 25.93 | 7 | -18.93 |
+| F | Leon Draisaitl | EDM | 11.43 | 6 | 23.21 | 13 | -10.21 |
+| F | Nikita Kucherov | TBL | 10.08 | 7 | 23.09 | 7 | -16.09 |
+| F | Jason Robertson | DAL | 11.80 | 6 | 20.30 | 13 | -7.30 |
+| F | Tage Thompson | BUF | 13.34 | 13 | 19.92 | 20 | +0.08 |
+| F | Cole Caufield | MTL | 11.11 | 19 | 19.08 | 19 | -0.08 |
+| F | Wyatt Johnston | DAL | 11.80 | 6 | 18.86 | 10 | -8.86 |
+| **DEFENCE** | | | | | | | |
+| D | Cale Makar | COL | 15.35 | 13 | 20.26 | 9 | -11.26 |
+| D | Evan Bouchard | EDM | 11.43 | 6 | 16.17 | 8 | -8.17 |
+| D | Rasmus Dahlin | BUF | 13.34 | 13 | 16.11 | 18 | +1.89 |
+| D | Shayne Gostisbehere | CAR | 13.22 | 19 | 15.14 | 15 | -0.14 |
+| D | Darren Raddysh | TBL | 10.08 | 7 | 12.71 | 3 | -9.71 |
+| D | Lane Hutson | MTL | 11.11 | 19 | 12.20 | 19 | +6.80 |
+| **GOALIES** | | | | | | | |
+| G | Scott Wedgewood | COL | 15.35 | 13 | 13.65 | 7 | -6.65 |
+| G | Brandon Bussi | CAR | 13.22 | 4* | 12.20 | 5 | -7.20 |
+| | | | | **Total** | **330.52** | **209** | **-121.52** |
+
+\* Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs.
+
+
+# Future Work and Limitations
 There are two key areas that I think will improve my chances in the playoff pool:
 1. Strategy around the optimization problem
 2. Improving playoff bracket simulations
-
-The strategy above involved some hedging where the final roster contained players from 7 distinct teams. 
 
 My optimized roster this year contained players from 7 distinct teams. This was a good to gain points from top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each consecutive round. In contrast, half of the playoff pool's winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that an optimized roster can only contain players from, let's say, 2-4 distinct teams. This way I can hopefully continue to gather more fantasy points just by nature of my players being in more games and opportunities to score points. In the scenario of only chosing players from two teams, I could extend constraint by requiring the two teams be from different conferences as the Stanley Cup Finals features a team from each conference.
 
