@@ -365,8 +365,6 @@ $$
 \mathbb{E}[G_i] = \mathrm{GPG}_i \times \mathbb{E}[N_i],
 $$
 
-and
-
 $$
 \mathbb{E}[A_i] = \mathrm{APG}_i \times \mathbb{E}[N_i].
 $$
@@ -395,16 +393,11 @@ $$
 \mathbb{E}[W_i] = \mathrm{WPG}_i \times \mathbb{E}[N_i],
 $$
 
-and
-
 $$
 \mathbb{E}[A_i] = \mathrm{APG}_i \times \mathbb{E}[N_i].
 $$
 
 Here, $\mathbb{E}[\mathrm{SO}_i]$, $\mathbb{E}[W_i]$, and $\mathbb{E}[A_i]$ denote the expected number of shutouts, wins, and assists for goalie $i$ in the playoffs, respectively. $\mathrm{SOPG}_i$, $\mathrm{WPG}_i$, and $\mathrm{APG}_i$ denote the goalie's regular season shutouts, wins, and assists per game. $\mathbb{E}[N_i]$ denotes the expected number of playoff games played by goalie $i$'s team.
-
-## Assumptions
-It is worth noting that one complication of this methodology is that it is common for players to get traded throughout the regular season and can play for more than one team. For the purposes of this project, any players that get traded get their point totals across teams summed together and the roster at the time of playoffs is used as their team. 
 
 ## Assumptions
 One complication of this methodology is that players can be traded throughout the regular season and may accumulate statistics for multiple teams. For the purposes of this project, a player's regular season statistics are aggregated across all teams they played for, while their playoff expected values are determined using the team on whose playoff roster they ultimately appear. This assumes that a player's scoring ability is independent of the team they played for during the regular season.
@@ -568,8 +561,9 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 
 
 Summary table:
+
 | Metric | Value |
-|:------|------:|
+|:-------|------:|
 | Predicted Team Score | 330.52 |
 | Actual Team Score | 209 |
 | Prediction Error | 121.52 |
@@ -594,8 +588,8 @@ SVG
 <figure class="figure">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.svg"
-    alt="Expected versus actual playoff games by team">
-
+    alt="Expected versus actual playoff games by team"
+    style="max-width: 100%; height: auto;">
   <figcaption>
   </figcaption>
 </figure>
