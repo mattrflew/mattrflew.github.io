@@ -138,7 +138,7 @@ A notebook detailing the Elo implementation is available [here](https://github.c
 
 ### The Elo Rating System
 
-The Elo rating system is a method for calculating the skill or strength of a player/team relative to their competitors. The difference in ratings between two teams can be a predictor of the outcome of the game. Two teams with equal rating playing each other are expected to have an equal number of wins. A team with a higher rating is more likely to win against a lower rated opponent.
+The [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) is a method for calculating the skill or strength of a player/team relative to their competitors. The difference in ratings between two teams can be a predictor of the outcome of the game. Two teams with equal rating playing each other are expected to have an equal number of wins. A team with a higher rating is more likely to win against a lower rated opponent.
 
 #### Algorithms
 The basic Elo system is defined by two algorithms.
@@ -149,9 +149,10 @@ $$
 E_A = \frac{1}{1 + 10 ^ {\frac{R_B - R_A}{400}}},
 $$
 
-and similar for $E_B$. The factor of 400 is arbitrary and standard in ELO systems.
+and similar for $E_B$. The factor of 400 is arbitrary and standard in Elo systems.
 
 Given the actual outcome for team $A$, $S_A$
+
 $$
 S_A = \begin{cases} 
 1 & \text{if Player } A \text{ wins}  \\
@@ -159,12 +160,14 @@ S_A = \begin{cases}
 \end{cases},
 $$
 
-and  
+and 
+
 $$
 S_B = 1 - S_A,
 $$
 
 the rating of each team can be updated as:
+
 $$
 R_A \gets R_A + K(S_A - E_A),
 $$
@@ -183,6 +186,7 @@ In sports there is said to be a benefit to the home team when they play at their
 Examining the results of all regular season NHL games between 2010-2025 showed that the home team won 54.10% of the time, demonstrating a slight advantage to the home team. We can try to account for this in the Elo ratings by giving the home team a slight rating boost, $h_{adv}$.
 
 If we have two teams of equal strength, $R_A=R_B$ but the home team gets a boost of $h_{adv}$, then the expected home advantage with probablity is (if $A$ is home team):
+
 $$
 E_H = \frac{1}{1 + 10 ^ {\frac{R_B - (R_A+h_{adv})}{400}}} = \frac{1}{1 + 10 ^ {\frac{-h_{adv}}{400}}},
 $$
@@ -279,7 +283,7 @@ With the Elo system fully defined, we can now calculate Elo ratings using regula
 1. Initialize every team with an Elo rating of $R=1500$, the arbitrary but conventional initial value used in many Elo rating systems.
 2. Iterate through each regular season game in chronological order.
 3. Calculate the expected game outcome using the current Elo ratings.
-4. Update the Elo ratings based on the true game result using the Elo update rules.
+4. Update the Elo ratings based on the observed game result using the Elo update rules.
 5. Repeat until every regular season game has been processed.
 
 The final Elo ratings at the conclusion of the regular season are then used as the starting measure of team strength in the playoff simulations.
@@ -300,7 +304,7 @@ The table below summarizes the ten highest-rated teams according to the Elo syst
 | MIN | 1544.06 | 9 | 7 |
 | PHI | 1542.90 | 10 | 10 |
 
-The highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game. Consequently, even the strongest teams enter the playoffs with substantial uncertainty, motivating the use of Monte Carlo simulation rather than deterministic bracket prediction. For context, the lowest rated team at the end of the regular season was the Vancouver Canucks, with an Elo rating of approximately 1322.
+The highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game. Consequently, even the strongest teams enter the playoffs with substantial uncertainty, motivating the use of Monte Carlo simulations rather than deterministic bracket prediction. For context, the lowest rated team at the end of the regular season was the Vancouver Canucks, with an Elo rating of approximately 1322.
 
 The figure below shows the final Elo rankings and final regular season standings for all teams.
 
@@ -337,13 +341,17 @@ Aggregating the results of these simulations provides estimates of each team's p
 At a high level, a Monte Carlo simulation is a computational algorithm that uses repeated random sampling to obtain the likelihood of a range of results of occurring. They are a way to model the probability of different outcomes of a process that can not be easily predicted.
 
 ### Simulating One Game
+
+With the final Elo ratings calculated, simulating an individual game is straightforward. The home team's win probability is first computed from the Elo ratings of the two teams. A uniformly distributed random number is then generated, and the game outcome is determined by comparing this value to the computed win probability. The implementation is shown below.
+
+
 ```python
 import numpy as 
 rng = np.random.default_rng(seed=123)
 
 def elo_compute_win_probability(R_h, R_a, h_adv=30):
     '''
-    Given the Elo ratings for the home and away teams (h and a), compute the probability team h wins. 
+    Given the Elo ratings, R,  for the home and away teams (h and a), compute the probability team h wins. 
     h_adv: home team advantage factor.
     '''
     return 1.0 / (1.0 + 10**((R_a - (R_h + h_adv))/400.0))
@@ -352,7 +360,6 @@ def simulate_game(R_h, R_a, rng, h_adv=30):
     '''
     Returns a boolean 1 if home team won, otherwise home team lost.
     '''
-    
     # Calculate the win probability
     p_home_win = elo_compute_win_probability(R_h, R_a, h_adv=h_adv)
     
@@ -364,11 +371,31 @@ def simulate_game(R_h, R_a, rng, h_adv=30):
 
 ### Simulating the Entire Playoffs
 
+With this ability to simulate an individual game, the next step is to simulate an entire Stalney Cup playoff bracket. Since each playoff matchup is a best of seven series, we first extend the game simulation to simulate an entire series using the standard 2-2-1-1-1 home-ice format of the NHL. Games are simulated sequentially until one team reaches four wins, at which point the winner advances to the next round.
+
+At a high level, one playoff simulation follows the procedure below:
+
+1. Simulate each first round series using the best of seven format.
+2. Advance the winning teams to the next round and determine the home team according to the NHL playoff format.
+3. Repeat until the Stanley Cup Final has been simulated.
+4. Record the Stanley Cup champion and the number of playoff games played by each team.
+
+Repeating this process many times produces a Monte Carlo approximation of the distribution of possible playoff outcomes. By aggregating the results across all simulations, we can estimate each team's probability of winning the Stanley Cup and, more importantly for the optimization problem, the expected number of playoff games each team will play.
+
 #### Updating Elo During Simulation
-Instead of holding the ratings static, for a playoff simulation we can update Elo ratings (using the update rules explained in a [previous section](#putting-it-all-together)) based on the simulated outcomes on each game in the simulation. This way we can try and capture team strength throughout the playoffs, for example a team going on a postseason hot streak, rather than holding ratings static at the end of the regular season. For subsequent next playoff simulations, the ratings will reset to the team's base ratings to provide a fresh simulation which is independent of previous ones.
+Instead of holding the ratings static, for a playoff simulation we can update Elo ratings (using the update rules explained in a [previous section](#putting-it-all-together)) based on the simulated outcomes on each game in the simulation. This way we can try and capture team strength throughout the playoffs, for example a team going on a postseason hot streak. At the beginning of each new Monte Carlo simulation, the Elo ratings are rest to their final regular season values so that every simulated run remains independent of the others.
 
 #### Results
 
+A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. From this, the model produces two quantities that are of particular intesrest: the probability of winning the Stanly cup and the expected number of playoff games played.
+
+
+> Stanley cup figure
+
+
+
+
+> Expected games figure
 
 
 # Estimating Player Value
@@ -493,7 +520,7 @@ where $F$, $D$, and $G$ denotes the respective sets of forwards, defencemen, and
 
 Additional strategic constraints can also be added into the optimization model. 
 
-A maximum number of players per team was imposed to encourage a more balanced roster and reduce the impact of inccorect playoff bracket prediction.
+A maximum number of players per team was imposed to encourage a more balanced roster and reduce the impact of incorrect playoff bracket prediction.
 
 $$
 \sum_{i \in T} x_i \leq M_T \qquad \forall\ T,
