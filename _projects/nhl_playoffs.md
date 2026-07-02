@@ -274,12 +274,20 @@ where $h_{adv}$, $G$, and $M$ are the home-ice, goal differential, and overtime/
 
 ### Calculating Elo Ratings
 
-At the start of a season, each team will be initialized to the same rating, $R=1500$. 
+With the Elo system fully defined, we can now calculate Elo ratings using regular season box score data. At a high level, the Elo ratings are computed by repeatedly updating team ratings after each regular season game according to the following procedure:
+
+1. Initialize every team with an Elo rating of $R=1500$, the arbitrary but conventional initial value used in many Elo rating systems.
+2. Iterate through each regular season game in chronological order.
+3. Calculate the expected game outcome using the current Elo ratings.
+4. Update the Elo ratings based on the true game result using the Elo update rules.
+5. Repeat until every regular season game has been processed.
+
+The final Elo ratings at the conclusion of the regular season are then used as the starting measure of team strength in the playoff simulations.
 
 #### Results
 The table below summarizes the ten highest-rated teams according to the Elo system. For comparison, the final regular season league ranking is also shown.
 
-| Team | Elo Rating | Elo Rank | Regular Season Standing |
+| Team | Elo Rating | Elo Rank | Standings Rank |
 |:----:|-----------:|:--------:|:---------:|
 | CAR | 1617.92 | 1 | 2 |
 | BUF | 1613.01 | 2 | 4 |
@@ -292,14 +300,24 @@ The table below summarizes the ten highest-rated teams according to the Elo syst
 | MIN | 1544.06 | 9 | 7 |
 | PHI | 1542.90 | 10 | 10 |
 
-> Elo vs standings figure
+The highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game. Consequently, even the strongest teams enter the playoffs with substantial uncertainty, motivating the use of Monte Carlo simulation rather than deterministic bracket prediction. For context, the lowest rated team at the end of the regular season was the Vancouver Canucks, with an Elo rating of approximately 1322.
 
-> Elo vs points figure
+The figure below shows the final Elo rankings and final regular season standings for all teams.
+
+<figure style="text-align: center;">
+  <img
+    src="/assets/projects/nhl_playoff_pool/elo_rank_vs_standings.svg"
+    alt="Elo ranking vs regular season standings rankings."
+    style="max-width: 100%; height: auto;">
+</figure>
+
+Overall, the Elo rankings broadly agree with the final regular season standings, with most teams lying close to the one-to-one line. This agreement provides confidence that the implemented Elo system produces reasonable estimates of team strength, while still distinguishing between teams with similar regular season records. 
+
+The Elo ratings provide the foundation for estimating game win probabilities throughout the Stanley Cup playoffs, which will be further discussed in the next section.
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
 A notebook detailing the playoff simulation framework is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb). 
-
 
 We can begin this section by acknowledging how difficult it is to accurately predict playoff bracket winners due to the inherent uncertainty associated with each series. Even under the simple assumptions that every playoff series is a fair coin flip, there are 
 
