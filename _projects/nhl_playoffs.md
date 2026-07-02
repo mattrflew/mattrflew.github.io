@@ -389,10 +389,12 @@ Instead of holding the ratings static, for a playoff simulation we can update El
 
 A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. We retain the results of each simulation and aggregate them once they are all complete. From this, the model produces our statistc of interest: the expected number of playoff games played per team.
 
+> Are these figures showing up?
+
 <figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_playoff_games.svg"
-    alt="Expected versus actual playoff games by team"
+    alt="Expected playoff games by team."
     style="max-width: 100%; height: auto;">
 </figure>
 
@@ -404,7 +406,7 @@ Although not as pertinent to the project, a byproduct of the simulations is that
 <figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/probability_of_winning_stanley_cup.svg"
-    alt="Expected versus actual playoff games by team"
+    alt="Probability of winning stanley cup by team."
     style="max-width: 100%; height: auto;">
 </figure>
 
