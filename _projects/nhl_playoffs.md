@@ -326,7 +326,7 @@ rng = np.random.default_rng(seed=123)
 def elo_compute_win_probability(R_h, R_a, h_adv=30):
     '''
     Given the Elo ratings for the home and away teams (h and a), compute the probability team h wins. 
-    h_adv is the home team advantage factor.
+    h_adv: home team advantage factor.
     '''
     return 1.0 / (1.0 + 10**((R_a - (R_h + h_adv))/400.0))
     
@@ -594,7 +594,7 @@ Summary table:
 
 
 
-<figure class="figure">
+<figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_vs_actual_fantasy_points.svg"
     alt="Expected versus actual fantasy points by player"
