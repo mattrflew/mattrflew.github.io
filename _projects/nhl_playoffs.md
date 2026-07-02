@@ -70,7 +70,12 @@ These questions naturally divide the project into major components which are dis
 ## System Overview
 The system transforms raw NHL data (player statistics, team records, game results, etc.) into an optimized fantasy roster, given the above objectives and constraints. Each stage builds on the previous one, creating end-to-end analytics pipeline. A high-level overview of the system is represented in the following diagram.
 
-![System Overview](/assets/projects/nhl_playoff_pool/system_overview.svg)
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/system_overview.svg"
+    alt="System Overview"
+    style="max-width: 100%; height: auto;">
+</figure>
 
 # Data Collection, Engineering, & Processing
 
@@ -201,7 +206,14 @@ If a particular game was a blowout for example, we want the rating changes to re
 
 For all regular season games in the dataset, I calculated the goal differential between the winning and losing teams.
 
-![Goal differential of all regular season NHL games (2010-2025)](/assets/projects/nhl_playoff_pool/goal_differential.png)
+
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/goal_differential.svg"
+    alt="Goal differential of all regular season NHL games (2010-2025)"
+    style="max-width: 100%; height: auto;">
+</figure>
+
 
 We see that approximately 60% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparitively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
 
