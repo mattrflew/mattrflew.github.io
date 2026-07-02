@@ -387,16 +387,30 @@ Instead of holding the ratings static, for a playoff simulation we can update El
 
 #### Results
 
-A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. From this, the model produces two quantities that are of particular intesrest: the probability of winning the Stanly cup and the expected number of playoff games played.
+A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. We retain the results of each simulation and aggregate them once they are all complete. From this, the model produces our statistc of interest: the expected number of playoff games played per team.
+
+<figure style="text-align: center;">
+  <img
+    src="/assets/projects/nhl_playoff_pool/expected_playoff_games.svg"
+    alt="Expected versus actual playoff games by team"
+    style="max-width: 100%; height: auto;">
+</figure>
+
+As a generality, the higher rated teams are projected to play more playoff games on average, reflecting their increased likelihood of advancing through multiple rounds of the postseason. Conversely, lower rated teams are expected to play fewer games due to their greater probability of early elimination. There is more at play than just Elo rating, however, because the playoff bracket is fixed at the start of each simulation. As a result, some strong teams are forced to play one another in the early rounds, while others benefit from a more favourable path through the bracket. These effects propagate throughout the tournament and influence the expected number of games played. The resulting expected game totals provide the link between the team-level Monte Carlo simulations and the player level fantasy projections developed in the following section.
+
+Although not as pertinent to the project, a byproduct of the simulations is that we obtain the probabilities of each team winning the Stanley Cup.
 
 
-> Stanley cup figure
+<figure style="text-align: center;">
+  <img
+    src="/assets/projects/nhl_playoff_pool/probability_of_winning_stanley_cup.svg"
+    alt="Expected versus actual playoff games by team"
+    style="max-width: 100%; height: auto;">
+</figure>
 
+According to the simulations, the Colorado Avalanche emerge as the favourites to win the Stanley Cup with an estimated 19.5% chance of winning. Notably, no team exceeds a 20% probability of becoming champion, illustrating the inherent uncertainty of the NHL playoffs, where even the strongest teams do not have a straightforward path to the Stanley Cup.
 
-
-
-> Expected games figure
-
+It is also interesting that the ordering of teams by Stanley Cup win probability differs from the ordering by expected number of playoff games. This reflects the fact that these two quantities measure different aspects of playoff success. For example, teams may be expected to play more games because they are projected to compete in longer series, while others may have a higher probability of winning the Stanley Cup despite playing fewer games on average. The fixed playoff bracket and resulting matchup structure also contribute to these differences.
 
 # Estimating Player Value
 Having estimated each team's expected number of playoff games, we can now estimate the expected fantasy value of every player. This completes the predictive component of the pipeline and provides the inputs required for roster optimization.
