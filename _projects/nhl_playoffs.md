@@ -51,14 +51,14 @@ The rules of the playoff pool are quite simple. Before the start of the Stanley 
 ### Scoring
 
 #### Skaters
-- Goal: **2 Points**
-- Assist: **1 Point**
+- Goal: 2 Points
+- Assist: 1 Point
 
 #### Goalies
 
-- Win: **1 Point**
-- Assist: **1 Point**
-- Shutout: **2 Points**
+- Win: 1 Point
+- Assist: 1 Point
+- Shutout: 2 Points
 
 Maximizing fantasy points requires answering three questions:
 1. Which teams are most likely to advance through the playoffs?
@@ -264,6 +264,25 @@ where $h_{adv}$, $G$, and $M$ are the home-ice, goal differential, and overtime/
 
 At the start of a season, each team will be initialized to the same rating, $R=1500$. 
 
+#### Results
+The table below summarizes the ten highest-rated teams according to the Elo system. For comparison, the final regular season league ranking is also shown.
+
+| Team | Elo Rating | Elo Rank | Regular Season Standing |
+|:----:|-----------:|:--------:|:---------:|
+| CAR | 1617.92 | 1 | 2 |
+| BUF | 1613.01 | 2 | 4 |
+| COL | 1603.33 | 3 | 1 |
+| MTL | 1588.70 | 4 | 5 |
+| OTT | 1576.24 | 5 | 9 |
+| DAL | 1575.09 | 6 | 3 |
+| TBL | 1572.35 | 7 | 5 |
+| WSH | 1546.24 | 8 | 12 |
+| MIN | 1544.06 | 9 | 7 |
+| PHI | 1542.90 | 10 | 10 |
+
+> Elo vs standings figure
+
+> Elo vs points figure
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
@@ -289,7 +308,8 @@ At a high level, a Monte Carlo simulation is a computational algorithm that uses
 
 ### Simulating One Game
 ```python
-import numpy as np
+import numpy as 
+rng = np.random.default_rng(seed=123)
 
 def elo_compute_win_probability(R_h, R_a, h_adv=30):
     '''
@@ -319,40 +339,161 @@ Instead of holding the ratings static, for a playoff simulation we can update El
 
 #### Results
 
-The table below summarizes the ten highest-rated teams according to the Elo system. For comparison, the final regular season league ranking is also shown.
 
-| Team | Elo Rating | Elo Rank | Regular Season Standing |
-|:----:|-----------:|:--------:|:---------:|
-| CAR | 1617.92 | 1 | 2 |
-| BUF | 1613.01 | 2 | 4 |
-| COL | 1603.33 | 3 | 1 |
-| MTL | 1588.70 | 4 | 5 |
-| OTT | 1576.24 | 5 | 9 |
-| DAL | 1575.09 | 6 | 3 |
-| TBL | 1572.35 | 7 | 5 |
-| WSH | 1546.24 | 8 | 12 |
-| MIN | 1544.06 | 9 | 7 |
-| PHI | 1542.90 | 10 | 10 |
-
-> Elo vs standings figure
-
-> Elo vs points figure
 
 # Estimating Player Value
+Having estimated each team's expected number of playoff games, we can now estimate the expected fantasy value of every player. This completes the predictive component of the pipeline and provides the inputs required for roster optimization.
 
-The expected value $v$ of a skater $i$ will be defined as:
+For simplicity, we assume that each player will maintain their regular season scoring rate throughout the playoffs. While individual performance can certainly improve or decline in the postseason, regular season statistics provide a reasonable basis for expected production. Only statistics from the current regular season are used to estimate player performance. In this project, the primary source of uncertainty is assumed to be the number of playoff games played rather than changes in individual player performance. These simplifying assumptions are considered sufficient for the purposes of this model.
+
+Per the rules of the fantasy hockey pool, as explained in a previous [section](#the-optimization-problem), skaters and goalies have different point systems. 
+
+## Skaters
+The scoring for skaters (forwards and defencemen) is defined as:
+- Goals: 2 points
+- Assists: 1 point
+
+The expected fantasy value, $\mathbb{E}[v_i]$, of skater $i$ is defined as
+
 $$
-\mathbb{E}[v_i] = 2 \times \mathbb{E}[G_i] + 1 \times \mathbb{E}[A_i], 
+\mathbb{E}[v_i] = 2\,\mathbb{E}[G_i] + \mathbb{E}[A_i],
 $$
 
+where
+
+$$
+\mathbb{E}[G_i] = \mathrm{GPG}_i \times \mathbb{E}[N_i],
+$$
+
+and
+
+$$
+\mathbb{E}[A_i] = \mathrm{APG}_i \times \mathbb{E}[N_i].
+$$
+
+Here, $\mathbb{E}[G_i]$ and $\mathbb{E}[A_i]$ denote the expected number of goals and assists scored by player $i$ in the playoffs, respectively. $\mathrm{GPG}_i$ and $\mathrm{APG}_i$ denote the player's regular season goals and assists per game. $\mathbb{E}[N_i]$ denotes the expected number of playoff games played by player $i$'s team.
+
+## Goalies
+The scoring for goalies is defined as:
+- Wins: 1 point
+- Assists: 1 point
+- Shutouts: 2 points
+
+Similarly, the expected fantasy value, $\mathbb{E}[v_i]$, of goalie $i$ is defined as
+
+$$
+\mathbb{E}[v_i] = 2\,\mathbb{E}[\mathrm{SO}_i] + \mathbb{E}[W_i] + \mathbb{E}[A_i],
+$$
+
+where
+
+$$
+\mathbb{E}[\mathrm{SO}_i] = \mathrm{SOPG}_i \times \mathbb{E}[N_i],
+$$
+
+$$
+\mathbb{E}[W_i] = \mathrm{WPG}_i \times \mathbb{E}[N_i],
+$$
+
+and
+
+$$
+\mathbb{E}[A_i] = \mathrm{APG}_i \times \mathbb{E}[N_i].
+$$
+
+Here, $\mathbb{E}[\mathrm{SO}_i]$, $\mathbb{E}[W_i]$, and $\mathbb{E}[A_i]$ denote the expected number of shutouts, wins, and assists for goalie $i$ in the playoffs, respectively. $\mathrm{SOPG}_i$, $\mathrm{WPG}_i$, and $\mathrm{APG}_i$ denote the goalie's regular season shutouts, wins, and assists per game. $\mathbb{E}[N_i]$ denotes the expected number of playoff games played by goalie $i$'s team.
+
+## Assumptions
+It is worth noting that one complication of this methodology is that it is common for players to get traded throughout the regular season and can play for more than one team. For the purposes of this project, any players that get traded get their point totals across teams summed together and the roster at the time of playoffs is used as their team. 
+
+## Assumptions
+One complication of this methodology is that players can be traded throughout the regular season and may accumulate statistics for multiple teams. For the purposes of this project, a player's regular season statistics are aggregated across all teams they played for, while their playoff expected values are determined using the team on whose playoff roster they ultimately appear. This assumes that a player's scoring ability is independent of the team they played for during the regular season.
 
 # Optimizing the Roster
 A notebook detailing the roster optimization implementation is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb). 
 
+Using the expected player values derived in the previous section, we can formulate the fantasy roster selection as an optimization problem. Before doing so, one practical consideration must be addressed. Since player value is estimated on a per-game basis, players who appeared in a small number of regular season games could have inflated expected values due to small sample sizes. For example, a player who records two points in a single game would appear to have a fantastic scoring rate despite having little evidence that rate is sustainable. 
+
+To reduce the influence of these outliers, only players who appeared in at least 15 regular season games are considered by the optimizer. This threshold is empirical, but it removes many of small-sample anomalies while retaining players who regularly play.  
+
+## Formulating the Mixed-Integer Linear Program
+
+With the player pool defined, the roster selection problem can now be formulated as a mixed-integer linear program.
+
+As outlined in a previous [section](#the-optimization-problem), participants select a fixed roster of players at the beginning of the playoff consisting of:
+
+- 15 skaters total
+  - 9 forwards
+  - 6 defencemen
+- 2 goalies
+
+We define a binary decision variable
+
+$$
+x_i =
+\begin{cases}
+1 & \text{if player } i \text{ is selected,} \\
+0 & \text{otherwise.}
+\end{cases}
+$$
+
+### Objective Function
+
+The objective is simply to maximize the total expected fantasy points accumulated by the roster.
+
+$$
+\text{max}\sum_i v_ix_i.
+$$
+
+Let $v_i$ denote the expected fantasy value of player $i$, as defined in the [Estimating Player Value](#estimating-player-value) section.
+
+### Constraints
+The number of players in each position are our primary constraints, which can be written out as follows:
+
+$$
+\sum_i x_i = 17,
+$$
+
+$$
+\sum_{i \in F} x_i = 9,
+$$
+
+$$
+\sum_{i \in D} x_i = 6,
+$$
+
+$$
+\sum_{i \in G} x_i = 2,
+$$
+
+where $F$, $D$, and $G$ denotes the respective sets of forwards, defencemen, and goalies.  
+
+Additional strategic constraints can also be added into the optimization model. 
+
+A maximum number of players per team was imposed to encourage a more balanced roster and reduce the impact of inccorect playoff bracket prediction.
+
+$$
+\sum_{i \in T} x_i \leq M_T \qquad \forall\ T,
+$$
+
+where $T$ denotes the set of players belonging to a given team, and $M_T$ is the maximum number of players permitted from that team. A modelling choice of $M_T=8$ was implemented.
+
+Furthermore, an additional constraint was imposed to prevent the optimizer from selecting more than one goalie from the same team. 
+
+$$
+\sum_{i \in G_T} x_i \leq 1 \qquad \forall\ T,
+$$
+
+where $G_T$ denotes the set of goalies on team $T$.
+
+Ideally, the goalie selected for the roster would be the starting goalie for that team.
+
+### Solving the Optimization Problem
+The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value. The complete implementation is available in the accompanying [notebook](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb).
 
 ## The Final Roster
 
-Finally, with all of the components of the project, running the linear programming optimizer yielded the following roster.
+Finally, with all of the components of the project combined, running the linear programming optimizer yielded the following roster.
 
 | Position | Player | Team | Expected Games | Value/Game | Expected Points |
 |:--------:|:-------|:----:|---------------:|----------:|----------------:|
@@ -381,8 +522,7 @@ Finally, with all of the components of the project, running the linear programmi
 
 > **Projected Team Total:** **330.52 fantasy points**
 
-
-
+The roster composition by team is summarized below. 
 
 | Team | Players Selected |
 |:----:|-----------------:|
@@ -396,6 +536,8 @@ Finally, with all of the components of the project, running the linear programmi
 | *Total* | **17 Players** |
 
 # Results
+
+With the 2026 Stanley Cup Playoffs complete, we can compare the model's projections against the actual fantasy points scored by the selected roster.
 
 | Pos | Player | Team | Exp. Games | Actual Games | Exp. Points | Actual Points | Prediction Error |
 |:---:|:-------|:----:|-----------:|-------------:|------------:|--------------:|---------:|
@@ -421,7 +563,42 @@ Finally, with all of the components of the project, running the linear programmi
 | G | Brandon Bussi | CAR | 13.22 | 4* | 12.20 | 5 | -7.20 |
 | | | | | **Total** | **330.52** | **209** | **-121.52** |
 
-\* Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs.
+\* Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs. 
+
+
+
+Summary table:
+| Metric | Value |
+|:------|------:|
+| Predicted Team Score | 330.52 |
+| Actual Team Score | 209 |
+| Prediction Error | 121.52 |
+| Final Pool Rank | 13 / 38 |
+
+
+> If I had selected Andersen as a goalie, I would have had a total of 223 points have tied for 3rd in the playoff pool
+
+MARKDOWN
+![Expected vs. Actual Playoff Games Per Team](/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.png)
+
+
+PNG
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.png"
+    alt="Expected versus actual playoff games by team"
+    style="max-width: 100%; height: auto;">
+</figure>
+
+SVG
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.svg"
+    alt="Expected versus actual playoff games by team">
+
+  <figcaption>
+  </figcaption>
+</figure>
 
 
 # Future Work and Limitations
@@ -437,7 +614,7 @@ Of course, this more aggressive strategy only works if my bracket simulations ar
 - Calculate Elo rating over a small number of seasons, acknowledging that teams do not start at the same strength at the beginning of each season. Teams are likely to carry over some of their momentum or strength season over season, and the Elo framework could represent that.
 - Add per game performance variability as a randomness factor. Any sport is difficult to model and unexpected outcomes regularly occur, so if we added a fitted amount of noise to each game's simulation we could potentially improve the overall predictions.
 
-And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. More development time could lead to a more accurate prediction for playoff performance.  
+And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. One noteable limiation of the current method is that it assumes point scoring rates of each player is the same in the playoffs as it was in the regular season, which is unlikely to be true. More development time could lead to a more accurate prediction for playoff performance.  
 
 However, I think the benefit gained from this will not be as significant as the playoff prediction portion. Let's say I have the constraint that I only want to pick players from two teams. In this case, a machine learning algorithm will probably just recommend to pick the players on the two teams which had the best regular season performance (about the same as what I implemented this year). The two methods would likely have different expected values per player, but if we constrain the optimization problem so much down to two teams it probably would end up with very similar rosters. At the very least, a more sophisticated expected value methodology is unlikely to be worse than what I did this year, so I will keep it as a secondary objective moving forward.  
 
