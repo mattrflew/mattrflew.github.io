@@ -70,7 +70,7 @@ These questions naturally divide the project into major components which are dis
 ## System Overview
 The system transforms raw NHL data (player statistics, team records, game results, etc.) into an optimized fantasy roster, given the above objectives and constraints. Each stage builds on the previous one, creating end-to-end analytics pipeline. A high-level overview of the system is represented in the following diagram.
 
-<figure class="figure">
+<figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/system_overview.svg"
     alt="System Overview"
@@ -207,7 +207,7 @@ If a particular game was a blowout for example, we want the rating changes to re
 For all regular season games in the dataset, I calculated the goal differential between the winning and losing teams.
 
 
-<figure class="figure">
+<figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/goal_differential.svg"
     alt="Goal differential of all regular season NHL games (2010-2025)"
@@ -215,7 +215,7 @@ For all regular season games in the dataset, I calculated the goal differential 
 </figure>
 
 
-We see that approximately 60% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparitively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
+We see that approximately 60% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparatively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
 
 $$
 G = \begin{cases} 
@@ -310,13 +310,13 @@ We can begin this section by acknowledging how difficult it is to accurately pre
 
 for a total 15 series, giving $2^{15}= 32,768$ possible playoff brackets. 
 
-Of course, playoff series are far from a coin flip-type result. Stronger teams are more likely to advance, and each possible bracket has a different probability of occuring based on the competing team strengths. Rather than attempting to predict a single "correct" bracket, this project instead simulates the playoffs thousands of times using the Elo derived win probabilities for each matchup. 
+Of course, playoff series are far from a coin flip-type result. Stronger teams are more likely to advance, and each possible bracket has a different probability of occurring based on the competing team strengths. Rather than attempting to predict a single "correct" bracket, this project instead simulates the playoffs thousands of times using the Elo derived win probabilities for each matchup. 
 
 Aggregating the results of these simulations provides estimates of each team's probability of advancing through every playoff round, ultimately allowing us to estimate the expect number of playoff games played by every team.
 
 ### Monte Carlo Methods
 
-At a high level, a Monte Carlo simulation is a computational algorithm that uses repeated random sampling to obtain the likelihood of a range of results of occuring. They are a way to model the probability of different outcomes of a process that can not be easily predicted.
+At a high level, a Monte Carlo simulation is a computational algorithm that uses repeated random sampling to obtain the likelihood of a range of results of occurring. They are a way to model the probability of different outcomes of a process that can not be easily predicted.
 
 ### Simulating One Game
 ```python
@@ -506,10 +506,10 @@ Finally, with all of the components of the project combined, running the linear 
 | F | Nathan MacKinnon | COL | 15.35 | 2.25 | **34.54** |
 | F | Martin Necas | COL | 15.35 | 1.77 | **27.16** |
 | F | Connor McDavid | EDM | 11.43 | 2.27 | **25.93** |
-| F | Leaon Draisaitl | EDM | 11.43 | 2.03 | **23.21** |
+| F | Leon Draisaitl | EDM | 11.43 | 2.03 | **23.21** |
 | F | Nikita Kucherov | TBL | 10.08 | 2.29 | **23.09** |
 | F | Jason Robertson | DAL | 11.80 | 1.72 | **20.30** |
-| F | Tage Thomspon | BUF | 13.34 | 1.49 | **19.92** |
+| F | Tage Thompson | BUF | 13.34 | 1.49 | **19.92** |
 | F | Cole Caufield | MTL | 11.11 | 1.72 | **19.08** |
 | F | Wyatt Johnston | DAL | 11.80 | 1.60 | **18.86** |
 | **DEFENCE** | | | | | |
@@ -584,8 +584,7 @@ Summary table:
 
 > If I had selected Andersen as a goalie, I would have had a total of 223 points have tied for 3rd in the playoff pool
 
-
-<figure class="figure">
+<figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.svg"
     alt="Expected versus actual playoff games by team"
@@ -603,7 +602,7 @@ Summary table:
 
 
 
-<figure class="figure">
+<figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/fantasy_prediction_error.svg"
     alt="Fantasy point prediction error by player"
@@ -617,7 +616,7 @@ There are two key areas that I think will improve my chances in the playoff pool
 1. Strategy around the optimization problem
 2. Improving playoff bracket simulations
 
-My optimized roster this year contained players from 7 distinct teams. This was a good to gain points from top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each consecutive round. In contrast, half of the playoff pool's winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that an optimized roster can only contain players from, let's say, 2-4 distinct teams. This way I can hopefully continue to gather more fantasy points just by nature of my players being in more games and opportunities to score points. In the scenario of only chosing players from two teams, I could extend constraint by requiring the two teams be from different conferences as the Stanley Cup Finals features a team from each conference.
+My optimized roster this year contained players from 7 distinct teams. This was a good way to gain points from top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each consecutive round. In contrast, half of the playoff pool's winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that an optimized roster can only contain players from, let's say, 2-4 distinct teams. This way I can hopefully continue to gather more fantasy points just by nature of my players being in more games and opportunities to score points. In the scenario of only chosing players from two teams, I could extend constraint by requiring the two teams be from different conferences as the Stanley Cup Finals features a team from each conference.
 
 Of course, this more aggressive strategy only works if my bracket simulations are good and I can predict which teams will have deep playoff runs. In development of the of the Elo rating system and Monte Carlo simulation framework, I had some ideas which would be interesting to try and see if it improves the predictions:
 
@@ -625,7 +624,7 @@ Of course, this more aggressive strategy only works if my bracket simulations ar
 - Calculate Elo rating over a small number of seasons, acknowledging that teams do not start at the same strength at the beginning of each season. Teams are likely to carry over some of their momentum or strength season over season, and the Elo framework could represent that.
 - Add per game performance variability as a randomness factor. Any sport is difficult to model and unexpected outcomes regularly occur, so if we added a fitted amount of noise to each game's simulation we could potentially improve the overall predictions.
 
-And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. One noteable limiation of the current method is that it assumes point scoring rates of each player is the same in the playoffs as it was in the regular season, which is unlikely to be true. More development time could lead to a more accurate prediction for playoff performance.  
+And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. One noteable limitation of the current method is that it assumes point scoring rates of each player is the same in the playoffs as it was in the regular season, which is unlikely to be true. More development time could lead to a more accurate prediction for playoff performance.  
 
 However, I think the benefit gained from this will not be as significant as the playoff prediction portion. Let's say I have the constraint that I only want to pick players from two teams. In this case, a machine learning algorithm will probably just recommend to pick the players on the two teams which had the best regular season performance (about the same as what I implemented this year). The two methods would likely have different expected values per player, but if we constrain the optimization problem so much down to two teams it probably would end up with very similar rosters. At the very least, a more sophisticated expected value methodology is unlikely to be worse than what I did this year, so I will keep it as a secondary objective moving forward.  
 
