@@ -572,27 +572,32 @@ Summary table:
 
 > If I had selected Andersen as a goalie, I would have had a total of 223 points have tied for 3rd in the playoff pool
 
-MARKDOWN
-![Expected vs. Actual Playoff Games Per Team](/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.png)
 
-
-PNG
-<figure class="figure">
-  <img
-    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.png"
-    alt="Expected versus actual playoff games by team"
-    style="max-width: 100%; height: auto;">
-</figure>
-
-SVG
 <figure class="figure">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.svg"
     alt="Expected versus actual playoff games by team"
     style="max-width: 100%; height: auto;">
-  <figcaption>
-  </figcaption>
 </figure>
+
+
+
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_fantasy_points.svg"
+    alt="Expected versus actual fantasy points by player"
+    style="max-width: 100%; height: auto;">
+</figure>
+
+
+
+<figure class="figure">
+  <img
+    src="/assets/projects/nhl_playoff_pool/fantasy_prediction_error.svg"
+    alt="Fantasy point prediction error by player"
+    style="max-width: 100%; height: auto;">
+</figure>
+
 
 
 # Future Work and Limitations
