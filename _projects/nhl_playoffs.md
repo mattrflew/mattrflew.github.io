@@ -389,8 +389,6 @@ Instead of holding the ratings static, for a playoff simulation we can update El
 
 A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. We retain the results of each simulation and aggregate them once they are all complete. From this, the model produces our statistc of interest: the expected number of playoff games played per team.
 
-> Are these figures showing up?
-
 <figure style="text-align: center;">
   <img
     src="/assets/projects/nhl_playoff_pool/expected_playoff_games.svg"
@@ -586,7 +584,7 @@ Finally, with all of the components of the project combined, running the linear 
 |  |  |  |  | | | 
 |  |  |  |  | *Total Expected* | **330.52** |
 
-> **Projected Team Total:** **330.52 fantasy points**
+**Projected Team Total:** **330.52 fantasy points**
 
 The roster composition by team is summarized below. 
 
@@ -600,6 +598,9 @@ The roster composition by team is summarized below.
 | TBL | 2 |
 | CAR | 2 |
 | *Total* | **17 Players** |
+
+
+The optimized roster, as expected, primarily consists of players from teams projected to play the greatest number of playoff games. For example, the five teams with the highest expected games contribute 14 of the 17 selected players. At the same time, the optimizer does not simply select players from the tournament favourites. Instead, it balances expected playoff games with individual scoring ability. A notable example is Nikita Kucherov, who has the highest expected fantasy value per game and was selected despite Tampa Bay having the fewest expected playoff games amongst the teams selected. 
 
 # Results
 
@@ -631,7 +632,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 
 \* Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs. 
 
-
+A summary of the performance of the final roster is presented below.
 
 Summary table:
 
@@ -643,24 +644,24 @@ Summary table:
 | Final Pool Rank | 13 / 38 |
 
 
-> If I had selected Andersen as a goalie, I would have had a total of 223 points have tied for 3rd in the playoff pool
+The optimized roster was projected to score 330.5 fantasy points but ultimately scored 209 points, corresponding to an overestimation of approximately 122 fantasy points. This placed the roster 13th out of 38 entries in the playoff pool. In the first and second rounds of the playoffs, my team was consistently in the top five in the pool, largely due to the fact the roster contained high scoring players from many teams. While 13th is a respectable result, it demonstrates that there is considerable room for improvement in the modelling approach. For reference, the winning team in the hockey pool had a total of 254 points. 
+
+One noteworthy observation is that replacing Brandon Bussi with Frederik Andersen (the two goalies for Carolina) would have increased the roster total to 223 fantasy points, tying for 3rd place in the playoff pool. This is unfortunately a limitation since starting goaltenders are not explicitly identified. Bussi and Andersen played 36 and 35 games respectively in the regular season for Carolina, and it was not announced who would primarily be starting playoff games prior to the first game. 
+
+
+The figure below compares the simulated expected number of playoff games with the actual number of games played for each playoff team (left), together with the corresponding prediction errors (right).
 
 <figure style="text-align: center;">
   <img
-    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games.svg"
+    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_playoff_games_two_panel.svg"
     alt="Expected versus actual playoff games by team"
     style="max-width: 100%; height: auto;">
 </figure>
 
+We see that the simulated expected number of playoff games tends to underestimate the teams that ultimately made deep playoff runs, most notably Vegas, Montreal, and Carolina in the figure above. This is evident in the large positive errors shown in the right-hand panel. Conversely, many teams eliminated in earlier rounds have modest negative prediction errors, indicating that their playoff runs were overestimated. This is a consequence of the Monte Carlo estimate representing an average over many possible playoff brackets. For example, Colorado was expected to play 15.4 games (the highest of any of the estimates), and yet any team reaching the Stanley Cup Final will play at least 16 games. This averaging effect over many mutually exclusive playoff scenarios may systematically understate the fantasy value of players on teams that ultimately make long postseason runs while also overestimating the value of players whose teams are eliminated early.
 
 
-<figure style="text-align: center;">
-  <img
-    src="/assets/projects/nhl_playoff_pool/expected_vs_actual_fantasy_points.svg"
-    alt="Expected versus actual fantasy points by player"
-    style="max-width: 100%; height: auto;">
-</figure>
-
+The figure below shows the fantasy point prediction error for every player selected in the optimized roster.
 
 
 <figure style="text-align: center;">
@@ -670,26 +671,53 @@ Summary table:
     style="max-width: 100%; height: auto;">
 </figure>
 
+The prediction errors demonstrate how these team level playoff prediction errors propagated through the optimization model. Because expected player values were calculated using the simulated expected number of playoff games, the optimizer selected elite players from several teams that were all projected to make relatively deep playoff runs. In reality, many of those projected runs did not materialize, leading to systematic overestimation across most of the roster. Conversely, players from Montreal, Carolina, and Buffalo generally met or exceeded their individual projections because their teams advanced as far as, or further than, expected. Although the players drafted from these three teams had lower expected value per game than many of the other players on the roster, their deeper runs ultimately resulted in higher total fantasy points. This finding could inform roster selection strategy: a solid player on a team making a deep playoff run (such as Lane Hutson) may be more valuable than selecting a superstar eliminated in the early rounds (such as Connor McDavid).
+
+Overall, these results suggest that the dominant source of prediction error lies in forecasting team playoff advancement rather than modelling individual player performance. They also highlight a limitation of the current expected value formulation. By optimizing against the average outcome of many simulated playoff brackets, the model effectively combines players whose best outcomes occur in different, mutually exclusive playoff scenarios.
 
 
 # Future Work and Limitations
-There are two key areas that I think will improve my chances in the playoff pool:
-1. Strategy around the optimization problem
-2. Improving playoff bracket simulations
 
-My optimized roster this year contained players from 7 distinct teams. This was a good way to gain points from top players in early rounds, but as the playoffs progressed I lost large portions of my roster in each consecutive round. In contrast, half of the playoff pool's winning team's roster consisted of Carolina Hurricanes players, who had a very successful run and ultimately won. I think my strategy needs to be more assertive by adding a constraint that an optimized roster can only contain players from, let's say, 2-4 distinct teams. This way I can hopefully continue to gather more fantasy points just by nature of my players being in more games and opportunities to score points. In the scenario of only chosing players from two teams, I could extend constraint by requiring the two teams be from different conferences as the Stanley Cup Finals features a team from each conference.
+The results of this project highlights three areas that I think will most improve my chances in the playoff pool: 
 
-Of course, this more aggressive strategy only works if my bracket simulations are good and I can predict which teams will have deep playoff runs. In development of the of the Elo rating system and Monte Carlo simulation framework, I had some ideas which would be interesting to try and see if it improves the predictions:
+1. Strategy surrounding the optimization problem
+2. Improving the playoff simulation model
+3. Developing more accurate player value predictions
 
-- Apply a grid-serach style of paramater optimization for $K$, $G$, and $M$ in the Elo rating system.
-- Calculate Elo rating over a small number of seasons, acknowledging that teams do not start at the same strength at the beginning of each season. Teams are likely to carry over some of their momentum or strength season over season, and the Elo framework could represent that.
-- Add per game performance variability as a randomness factor. Any sport is difficult to model and unexpected outcomes regularly occur, so if we added a fitted amount of noise to each game's simulation we could potentially improve the overall predictions.
+## Optimization Strategy
 
-And lastly, I want to make improvements to the player expected value predictions. A few preliminary tests using Machine Learning showed that a simple Linear Regression model with minimal feature engineering showed slight improvement over the logic of just using a player's regular season points per game as their value in the playoffs. One noteable limitation of the current method is that it assumes point scoring rates of each player is the same in the playoffs as it was in the regular season, which is unlikely to be true. More development time could lead to a more accurate prediction for playoff performance.  
+My optimized roster this year contained players from seven different teams, providing strong production in the early rounds but causing large portions of the roster to be eliminated as the playoffs progressed. This was slightly by design as I wanted to limit risk and hedge my bets and select a varied roster, hence the inclusion of the constraint of a maximum number of players allowed per team. Although the roster finished a decent 13th out of 38 entries, only two players on the roster ultimately reached the Stanley Cup Finals.
 
-However, I think the benefit gained from this will not be as significant as the playoff prediction portion. Let's say I have the constraint that I only want to pick players from two teams. In this case, a machine learning algorithm will probably just recommend to pick the players on the two teams which had the best regular season performance (about the same as what I implemented this year). The two methods would likely have different expected values per player, but if we constrain the optimization problem so much down to two teams it probably would end up with very similar rosters. At the very least, a more sophisticated expected value methodology is unlikely to be worse than what I did this year, so I will keep it as a secondary objective moving forward.  
+For comparison, half of the winning team's roster this year consisted of Carolina Hurricanes players who went on to win the Stanley Cup. This suggests that the playoff pool rewards identifying a small number of teams that make deep postseason runs, even if that means selecting players with lower regular season production. This is a riskier and and more aggressive strategy, but could be necessary to win the pool. 
 
-In the end though, this is just a fun family competition and I hope they do not mind too much that I am borderline cheating, even if I am still losing.
+One possible modification to the optimization problem would be to limit the number of teams represented in the final roster (for example, two to four teams). If only two teams are selected, an additional constraint could require them to come from different conferences, ensuring both have a potential path to the Stanley Cup Final. Allowing up to four teams provides a balance between concentrating the roster on teams expected to make deep playoff runs and retaining some protection against incorrect playoff predictions. As demonstrated by this year's results, playoff outcomes are inherently difficult to predict, so placing the entire roster on only two teams may introduce unnecessary risk if one or both are eliminated earlier than expected.
+
+Further, since we have the results of many simulated playoff runs. We could create multiple "optimal" rosters which implement different strategies, and identify the one which performs the best across the distribution of simulated outcomes. This would allow for a layer of validation. 
+
+Further, since the Monte Carlo framework already generates a large number of simulated playoff brackets, these simulations could be used to evaluate alternative roster construction strategies. Rather than producing a single optimized roster, multiple potential rosters could be created under different optimization constraints (for example, changing the number of teams represented). Each candidate roster could then be evaluated across the distribution of simulated playoff outcomes, allowing the strategy that perfoms best on average to be identified. This effectively introduces a layer of validation to the system, allowing the selection of a roster based on its expected value and on its robustness across many plausible playoff scenarios.
+
+## Improving Playoff Predictions
+
+A more aggressive optimization strategy is only effective if the playoff simulations correctly identify the teams most likely to advance. While I believe the Monte Carlo implementation itself is strong, several improvements to the underlying Elo model could improve predictive performance.   
+
+- Optimizing the Elo parameters ($K$, $G$, and $M$), using a grid search or other hyperparameter tuning technique.
+- Carrying Elo ratings across multiple seasons rather than reinitializing every team to 1500 at the start of each season, allowing long term strength of a team to persist.
+- Introducing stochastic game-to-game performance variability during simulations to better capture inherent randomness in hockey.
+
+## Improving Player Value Predictions
+
+The current implementation estimates playoff fantasy point ability directly from regular season statistics on a per game basis. This is a bit naive as it assumes that a player's scoring rate remains unchanged in the playoffs, which is unlikely to hold in practice. I created some preliminary experiments with simple machine learning models which showed slight improvement over the current methodology, even with limited feature engineering. Additional development time could potentially improve this further. 
+
+However, I suspect improvements in player value modelling will product smaller gains than improvements to the playoff simulations or optimization formulation. Once the optimization is constrained to a small number of teams, the selected players are likely to be the obvious high scoring players from those teams regardless of whether their expected values are estimated using a simple heuristic like this year or a more sophisticated machine learning model. Nevertheless, a stronger player value model would likely improve the overall robustness of the system so it remains an interesting objective for future work.  
+
+
+## Closing Thoughts
+
+So... after all that work, I still didn't win. 
+
+While that is a bit of a bummer, I really enjoyed building this system from the ground up and putting my skills in software development, statistics, simulation, mathematical modelling, and optimization to the test (against the evidently superior hockey minds of my family).
+
+At the end of the day, this is just a fun family competition. I hope they do not mind too much that I am borderline cheating, even if I am still losing.
 
 <p>
   <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer" target="_blank" rel="noopener">
