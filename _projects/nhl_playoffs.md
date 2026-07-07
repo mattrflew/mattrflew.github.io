@@ -38,6 +38,7 @@ This project is a system with the objective to:
 
 While doing this might break the spirit of a fun family competition, it provides for an interesting project. I have also consistently done poorly in this playoff pool, so I clearly need to change my old strategy of hurriedly choosing players the day before the deadline.
 
+This post will describe my approach to building this system for the 2026 NHL playoffs.
 
 ## The Optimization Problem
 The rules of the playoff pool are quite simple. Before the start of the Stanley Cup Playoffs, each participant selects a roster which cannot be changed for the remainder of the tournament. The players on the roster obtain fantasy points, which are summed together and the highest fantasy score wins the pool. 
@@ -81,18 +82,13 @@ The system transforms raw NHL data (player statistics, team records, game result
 
 The NHL provides two public APIs to access player statistics, game results, standings, schedules, and other information. While these APIs are well suited for individual queries, they appeared less convenient for large scale historical analysis, where thousands of requests must be made in a reproducible manner. This motivated the development of a dedicated data collection pipeline. 
 
-Fortunately, there are two useful community-maintained documentations of these APIs:
-
-- [github.com/Zmalski/NHL-API-Reference](https://github.com/Zmalski/NHL-API-Reference)
-- [gitlab.com/dword4/nhlapi/-/blob/master/new-api.md](https://gitlab.com/dword4/nhlapi/-/blob/master/new-api.md)
-
-Rather than interacting with API endpoints directly throughout the project, I developed a small Python library to provide a clean interface for data collection. The library is responsible for:
+I developed a small Python library to provide a clean interface for data collection. The library is responsible for:
 
 - Constructing API endpoints
 - Managing HTTP requests and sessions
 - Automatic retries
 - Caching raw API responses locally
-- Returning structured JSON for downdtream processing
+- Returning structured JSON for downstream processing
 
 This allows the analysis code to remain concise and modular to fit the needs of the project. 
 
@@ -126,7 +122,7 @@ These processed datasets form the foundation for the remainder of the project.
 For more detail on the implementation, the source code is available on [GitHub](https://github.com/mattrflew/nhl-playoff-pool-optimizer/tree/main/nhl_pool/dataset).
 
 
-# Predicting the Playoffs
+# Predicting the Playoffs Outcome
 
 The next challenge is estimating how the Stanley Cup Playoffs are likely to unfold. Since players can only accumulate fantasy points while their team remains in contention, predicting team performance is a critical component of estimating each player's expected value. 
 
@@ -175,7 +171,7 @@ $$
 and similarly for team $B$. The K-factor $K$ is discussed below.
 
 #### K-Factor
-The K-factor can be thought of as the sensitivity of the updates. A greater K-factor will lead to bigger swings in ratings and the opposite for smaller K-factors. In some systems you could have a variable K-factor if more than a certain number of games are played, since at the beginning we want a team's rating to stabilize quickly. For our purposes, it is probably satisfactory to just use a constant $K$. It is somewhat arbitrary, but let's use $K=20$.
+The K-factor can be thought of as the sensitivity of the updates. A greater K-factor will lead to bigger swings in ratings and the opposite for smaller K-factors. In some systems you could have a variable K-factor if more than a certain number of games are played, since at the beginning we want a team's rating to stabilize quickly. For our purposes, it is probably satisfactory to just use a constant $K$. It is somewhat arbitrary, but we will use $K=20$.
 
 ### Extensions on the Elo System
 The formulation above outlines the basic Elo system, but a number of additions can be made to improve it.
@@ -185,13 +181,13 @@ In sports there is said to be a benefit to the home team when they play at their
 
 Examining the results of all regular season NHL games between 2010-2025 showed that the home team won 54.10% of the time, demonstrating a slight advantage to the home team. We can try to account for this in the Elo ratings by giving the home team a slight rating boost, $h_{adv}$.
 
-If we have two teams of equal strength, $R_A=R_B$ but the home team gets a boost of $h_{adv}$, then the expected home advantage with probablity is (if $A$ is home team):
+If we have two teams of equal strength, $R_A=R_B$, but the home team gets a boost of $h_{adv}$, then the expected home advantage with probablity is (if $A$ is home team):
 
 $$
 E_H = \frac{1}{1 + 10 ^ {\frac{R_B - (R_A+h_{adv})}{400}}} = \frac{1}{1 + 10 ^ {\frac{-h_{adv}}{400}}},
 $$
 
-Given the above analysis, $E_H = 0.5410$, so we can solve for $h_{adv}$, giving:
+Given the above analysis, $E_H = 0.5410$, and we can solve for $h_{adv}$, giving:
 
 $$
 h_{adv} = -400\text{log}_{10}\left(\frac{1}{E_H} - 1 \right)
@@ -203,7 +199,7 @@ $$
 
 This value is used when calculating Elo ratings in regular season games. 
 
-For playoff games over the same time frame the home team only won 51.31% of the time, corresponding to $h_{adv} \approx 11$. 
+For playoff games over the same time frame the home team only won 51.31% of the time. This corresponds to $h_{adv} \approx 11$, and this factor is used when simulating playoff games. 
 
 #### Goal Differential
 If a particular game was a blowout for example, we want the rating changes to reflect this as it could indicate one team is significantly stronger than the other. The [World Football Elo Ratings](https://en.wikipedia.org/wiki/World_Football_Elo_Ratings#Number_of_goals) have something called a "Goal Index", $G$, where the number of goals between the winning and losing teams is taken into account. Football (soccer) scores are typically lower than hockey, so we'll modify their update logic slightly. 
@@ -251,6 +247,7 @@ Combining the modifications of the previous sections yields the final Elo formul
 
 
 The expected probabilities are: 
+
 $$
 E_H = \frac{1}{1 + 10 ^ {\frac{R_A - (R_H+h_{\text{adv}})}{400}}} \quad \text{and} \quad E_A = 1-E_H,
 $$
@@ -289,7 +286,7 @@ With the Elo system fully defined, we can now calculate Elo ratings using regula
 The final Elo ratings at the conclusion of the regular season are then used as the starting measure of team strength in the playoff simulations.
 
 #### Results
-The table below summarizes the ten highest-rated teams according to the Elo system. For comparison, the final regular season league ranking is also shown.
+The table below summarizes the ten highest-rated teams according to the Elo system for the 2025-2026 regular season. For comparison, the final regular season league ranking is also shown.
 
 | Team | Elo Rating | Elo Rank | Standings Rank |
 |:----:|-----------:|:--------:|:---------:|
@@ -315,7 +312,7 @@ The figure below shows the final Elo rankings and final regular season standings
     style="max-width: 100%; height: auto;">
 </figure>
 
-Overall, the Elo rankings broadly agree with the final regular season standings, with most teams lying close to the one-to-one line. This agreement provides confidence that the implemented Elo system produces reasonable estimates of team strength, while still distinguishing between teams with similar regular season records. 
+Overall, the Elo rankings broadly agree with the final regular season standings, with most teams lying close to the one-to-one line. This agreement provides confidence that the implemented Elo system produces reasonable estimates of team strength, while still distinguishing teams with similar regular season records. 
 
 The Elo ratings provide the foundation for estimating game win probabilities throughout the Stanley Cup playoffs, which will be further discussed in the next section.
 
@@ -377,17 +374,17 @@ At a high level, one playoff simulation follows the procedure below:
 
 1. Simulate each first round series using the best of seven format.
 2. Advance the winning teams to the next round and determine the home team according to the NHL playoff format.
-3. Repeat until the Stanley Cup Final has been simulated.
+3. Repeat for each round until the Stanley Cup Final has been simulated.
 4. Record the Stanley Cup champion and the number of playoff games played by each team.
 
-Repeating this process many times produces a Monte Carlo approximation of the distribution of possible playoff outcomes. By aggregating the results across all simulations, we can estimate each team's probability of winning the Stanley Cup and, more importantly for the optimization problem, the expected number of playoff games each team will play.
+Repeating this process many times produces an approximation of the distribution of possible playoff outcomes. By aggregating the results across all simulations, we can estimate each team's probability of winning the Stanley Cup and, more importantly for the optimization problem, the expected number of playoff games each team will play.
 
 #### Updating Elo During Simulation
-Instead of holding the ratings static, for a playoff simulation we can update Elo ratings (using the update rules explained in a [previous section](#putting-it-all-together)) based on the simulated outcomes on each game in the simulation. This way we can try and capture team strength throughout the playoffs, for example a team going on a postseason hot streak. At the beginning of each new Monte Carlo simulation, the Elo ratings are rest to their final regular season values so that every simulated run remains independent of the others.
+Instead of holding the ratings static, for a playoff simulation we can update Elo ratings based on the simulated outcomes on each game in the simulation. This way we can try and capture team strength throughout the playoffs, for example a team going on a postseason hot streak. At the beginning of each new Monte Carlo simulation, the Elo ratings are rest to their final regular season values so that every simulated run remains independent of the others.
 
 #### Results
 
-A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. We retain the results of each simulation and aggregate them once they are all complete. From this, the model produces our statistc of interest: the expected number of playoff games played per team.
+A total of 200,000 Monte Carlo playoff simulations were performed. This was found to provide stable estimates for playoff outcome probabilities while remaining computationally inexpensive. We retain the results of each simulation and aggregate them once they are all complete. From this, the model produces our statistic of interest: the expected number of playoff games played per team.
 
 <figure style="text-align: center;">
   <img
@@ -396,9 +393,9 @@ A total of 200,000 Monte Carlo playoff simulations were performed. This was foun
     style="max-width: 100%; height: auto;">
 </figure>
 
-As a generality, the higher rated teams are projected to play more playoff games on average, reflecting their increased likelihood of advancing through multiple rounds of the postseason. Conversely, lower rated teams are expected to play fewer games due to their greater probability of early elimination. There is more at play than just Elo rating, however, because the playoff bracket is fixed at the start of each simulation. As a result, some strong teams are forced to play one another in the early rounds, while others benefit from a more favourable path through the bracket. These effects propagate throughout the tournament and influence the expected number of games played. The resulting expected game totals provide the link between the team-level Monte Carlo simulations and the player level fantasy projections developed in the following section.
+As a generality, the higher rated teams are projected to play more playoff games on average, reflecting their increased likelihood of advancing through multiple rounds of the postseason. Conversely, lower rated teams are expected to play fewer games due to their greater probability of early elimination. As a result of the starting playoff bracket being fixed, some strong teams are forced to play one another in the early rounds, while others benefit from a more favourable path through the bracket. These effects propagate throughout the tournament and influence the expected number of games played. The resulting expected game totals provide the link between the team-level Monte Carlo simulations and the player level fantasy projections developed in the following section.
 
-Although not as pertinent to the project, a byproduct of the simulations is that we obtain the probabilities of each team winning the Stanley Cup.
+Although not as pertinent to the project, a fun byproduct of the simulations is that we obtain the probabilities of each team winning the Stanley Cup.
 
 
 <figure style="text-align: center;">
@@ -410,7 +407,7 @@ Although not as pertinent to the project, a byproduct of the simulations is that
 
 According to the simulations, the Colorado Avalanche emerge as the favourites to win the Stanley Cup with an estimated 19.5% chance of winning. Notably, no team exceeds a 20% probability of becoming champion, illustrating the inherent uncertainty of the NHL playoffs, where even the strongest teams do not have a straightforward path to the Stanley Cup.
 
-It is also interesting that the ordering of teams by Stanley Cup win probability differs from the ordering by expected number of playoff games. This reflects the fact that these two quantities measure different aspects of playoff success. For example, teams may be expected to play more games because they are projected to compete in longer series, while others may have a higher probability of winning the Stanley Cup despite playing fewer games on average. The fixed playoff bracket and resulting matchup structure also contribute to these differences.
+It is also interesting that the ordering of teams by Stanley Cup win probability differs from the ordering by expected number of playoff games. This reflects the fact that these two quantities measure different aspects of playoff success. For example, teams may be expected to play more games because they are projected to compete in longer series, while others may have a higher probability of winning the Stanley Cup despite playing fewer games on average. The fixed playoff bracket and resulting matchup structure contributes to these differences.
 
 # Estimating Player Value
 Having estimated each team's expected number of playoff games, we can now estimate the expected fantasy value of every player. This completes the predictive component of the pipeline and provides the inputs required for roster optimization.
@@ -476,7 +473,7 @@ One complication of this methodology is that players can be traded throughout th
 # Optimizing the Roster
 A notebook detailing the roster optimization implementation is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb). 
 
-Using the expected player values derived in the previous section, we can formulate the fantasy roster selection as an optimization problem. Before doing so, one practical consideration must be addressed. Since player value is estimated on a per-game basis, players who appeared in a small number of regular season games could have inflated expected values due to small sample sizes. For example, a player who records two points in a single game would appear to have a fantastic scoring rate despite having little evidence that rate is sustainable. 
+Using the expected player values derived in the previous section, we can formulate the fantasy roster selection as an optimization problem. Before doing so, one practical consideration must be addressed. Since player value is estimated on a per-game basis, players who appeared in a small number of regular season games could have inflated expected values due to small sample sizes. For example, a player who records two points and played in only one game would appear to have a fantastic scoring rate despite having little evidence that rate is sustainable. 
 
 To reduce the influence of these outliers, only players who appeared in at least 15 regular season games are considered by the optimizer. This threshold is empirical, but it removes many of small-sample anomalies while retaining players who regularly play.  
 
@@ -484,7 +481,7 @@ To reduce the influence of these outliers, only players who appeared in at least
 
 With the player pool defined, the roster selection problem can now be formulated as a mixed-integer linear program.
 
-As outlined in a previous [section](#the-optimization-problem), participants select a fixed roster of players at the beginning of the playoff consisting of:
+Participants select a fixed roster of players at the beginning of the playoff consisting of:
 
 - 15 skaters total
   - 9 forwards
@@ -534,7 +531,7 @@ where $F$, $D$, and $G$ denotes the respective sets of forwards, defencemen, and
 
 Additional strategic constraints can also be added into the optimization model. 
 
-A maximum number of players per team was imposed to encourage a more balanced roster and reduce the impact of incorrect playoff bracket prediction.
+A maximum number of players per team was imposed to encourage a more balanced roster and reduce the impact of incorrect playoff bracket predictions.
 
 $$
 \sum_{i \in T} x_i \leq M_T \qquad \forall\ T,
@@ -658,8 +655,7 @@ The figure below compares the simulated expected number of playoff games with th
     style="max-width: 100%; height: auto;">
 </figure>
 
-We see that the simulated expected number of playoff games tends to underestimate the teams that ultimately made deep playoff runs, most notably Vegas, Montreal, and Carolina in the figure above. This is evident in the large positive errors shown in the right-hand panel. Conversely, many teams eliminated in earlier rounds have modest negative prediction errors, indicating that their playoff runs were overestimated. This is a consequence of the Monte Carlo estimate representing an average over many possible playoff brackets. For example, Colorado was expected to play 15.4 games (the highest of any of the estimates), and yet any team reaching the Stanley Cup Final will play at least 16 games. This averaging effect over many mutually exclusive playoff scenarios may systematically understate the fantasy value of players on teams that ultimately make long postseason runs while also overestimating the value of players whose teams are eliminated early.
-
+We see that the simulated expected number of playoff games tends to underestimate the teams that ultimately made deep playoff runs, most notably Vegas, Montreal, and Carolina in the figure above. This is evident in the large positive errors shown in the right-hand panel. Conversely, many teams eliminated in earlier rounds have negative prediction errors, indicating that their playoff runs were overestimated. This is a consequence of the Monte Carlo estimate representing an average over many possible playoff brackets. Effectively, the teams that are exected to make long postseason runs get underestimated while also overestimating the teams likely to be eliminated early. This is evident where Colorado was expected to play 15.4 games (the highest of any of the estimates), and yet any team reaching the Stanley Cup Final will play at least 16 games. Likewise, Los Angeles was the only team exected to play less than 7 games, when in reality at least 8 teams will play 7 or less games because they get eliminated in the first round.
 
 The figure below shows the fantasy point prediction error for every player selected in the optimized roster.
 
@@ -671,10 +667,9 @@ The figure below shows the fantasy point prediction error for every player selec
     style="max-width: 100%; height: auto;">
 </figure>
 
-The prediction errors demonstrate how these team level playoff prediction errors propagated through the optimization model. Because expected player values were calculated using the simulated expected number of playoff games, the optimizer selected elite players from several teams that were all projected to make relatively deep playoff runs. In reality, many of those projected runs did not materialize, leading to systematic overestimation across most of the roster. Conversely, players from Montreal, Carolina, and Buffalo generally met or exceeded their individual projections because their teams advanced as far as, or further than, expected. Although the players drafted from these three teams had lower expected value per game than many of the other players on the roster, their deeper runs ultimately resulted in higher total fantasy points. This finding could inform roster selection strategy: a solid player on a team making a deep playoff run (such as Lane Hutson) may be more valuable than selecting a superstar eliminated in the early rounds (such as Connor McDavid).
+The prediction errors demonstrate how these team level playoff prediction errors propagated through the optimization model. Because expected player values were calculated using the simulated expected number of playoff games, the optimizer selected elite players from several teams that were all projected to make relatively moderate playoff runs. In reality, many of those projected runs did not materialize, leading to systematic overestimation across most of the roster. Conversely, players from Montreal, Carolina, and Buffalo generally met or exceeded their individual projections because their teams advanced as far as, or further than, expected. Although the players drafted from these three teams had lower expected value per game than many of the other players on the roster, their deeper runs ultimately resulted in higher total fantasy points. This finding could inform roster selection strategy: a solid player on a team making a deep playoff run (such as Lane Hutson) may be more valuable than selecting a superstar eliminated in the early rounds (such as Connor McDavid).
 
-Overall, these results suggest that the dominant source of prediction error lies in forecasting team playoff advancement rather than modelling individual player performance. They also highlight a limitation of the current expected value formulation. By optimizing against the average outcome of many simulated playoff brackets, the model effectively combines players whose best outcomes occur in different, mutually exclusive playoff scenarios.
-
+Overall, these results suggest that the dominant source of prediction error lies in forecasting team playoff advancement rather than modelling individual player performance. They also show a limitation of the current expected value formulation. By optimizing against the average outcome of many simulated playoff brackets, the model effectively selects players whose best outcomes occur in different, mutually exclusive playoff scenarios.
 
 # Future Work and Limitations
 
@@ -688,19 +683,17 @@ The results of this project highlights three areas that I think will most improv
 
 My optimized roster this year contained players from seven different teams, providing strong production in the early rounds but causing large portions of the roster to be eliminated as the playoffs progressed. This was slightly by design as I wanted to limit risk and hedge my bets and select a varied roster, hence the inclusion of the constraint of a maximum number of players allowed per team. Although the roster finished a decent 13th out of 38 entries, only two players on the roster ultimately reached the Stanley Cup Finals.
 
-For comparison, half of the winning team's roster this year consisted of Carolina Hurricanes players who went on to win the Stanley Cup. This suggests that the playoff pool rewards identifying a small number of teams that make deep postseason runs, even if that means selecting players with lower regular season production. This is a riskier and and more aggressive strategy, but could be necessary to win the pool. 
+For comparison, half of the pool's winning team's roster this year consisted of Carolina Hurricanes players (who went on to win the Stanley Cup). This suggests that the playoff pool rewards identifying a small number of teams that make deep postseason runs, even if that means selecting players with lower regular season production. This is a riskier and more aggressive strategy, but could be necessary to win the pool. 
 
 One possible modification to the optimization problem would be to limit the number of teams represented in the final roster (for example, two to four teams). If only two teams are selected, an additional constraint could require them to come from different conferences, ensuring both have a potential path to the Stanley Cup Final. Allowing up to four teams provides a balance between concentrating the roster on teams expected to make deep playoff runs and retaining some protection against incorrect playoff predictions. As demonstrated by this year's results, playoff outcomes are inherently difficult to predict, so placing the entire roster on only two teams may introduce unnecessary risk if one or both are eliminated earlier than expected.
 
-Further, since we have the results of many simulated playoff runs. We could create multiple "optimal" rosters which implement different strategies, and identify the one which performs the best across the distribution of simulated outcomes. This would allow for a layer of validation. 
-
-Further, since the Monte Carlo framework already generates a large number of simulated playoff brackets, these simulations could be used to evaluate alternative roster construction strategies. Rather than producing a single optimized roster, multiple potential rosters could be created under different optimization constraints (for example, changing the number of teams represented). Each candidate roster could then be evaluated across the distribution of simulated playoff outcomes, allowing the strategy that perfoms best on average to be identified. This effectively introduces a layer of validation to the system, allowing the selection of a roster based on its expected value and on its robustness across many plausible playoff scenarios.
+Further, since the Monte Carlo framework already generates a large number of simulated playoff brackets, these simulations could be used to evaluate alternative roster construction strategies. Rather than producing a single optimized roster, multiple potential rosters could be created under different optimization constraints (for example, changing the limit of teams to choose from). Each candidate roster could then be evaluated across the distribution of simulated playoff outcomes, allowing the strategy that perfoms best on average to be identified. This effectively introduces a layer of validation to the system, allowing the selection of a roster based on its expected value and on its robustness across many plausible playoff scenarios.
 
 ## Improving Playoff Predictions
 
-A more aggressive optimization strategy is only effective if the playoff simulations correctly identify the teams most likely to advance. While I believe the Monte Carlo implementation itself is strong, several improvements to the underlying Elo model could improve predictive performance.   
+A more aggressive optimization strategy is only effective if the playoff simulations correctly identify the teams most likely to advance. While I believe the Monte Carlo simulation implementation itself is strong, several improvements to the underlying Elo model could improve predictive performance.   
 
-- Optimizing the Elo parameters ($K$, $G$, and $M$), using a grid search or other hyperparameter tuning technique.
+- Optimizing the Elo parameters ($K$, $G$, and $M$) using a grid search or other hyperparameter tuning technique.
 - Carrying Elo ratings across multiple seasons rather than reinitializing every team to 1500 at the start of each season, allowing long term strength of a team to persist.
 - Introducing stochastic game-to-game performance variability during simulations to better capture inherent randomness in hockey.
 
@@ -708,14 +701,14 @@ A more aggressive optimization strategy is only effective if the playoff simulat
 
 The current implementation estimates playoff fantasy point ability directly from regular season statistics on a per game basis. This is a bit naive as it assumes that a player's scoring rate remains unchanged in the playoffs, which is unlikely to hold in practice. I created some preliminary experiments with simple machine learning models which showed slight improvement over the current methodology, even with limited feature engineering. Additional development time could potentially improve this further. 
 
-However, I suspect improvements in player value modelling will product smaller gains than improvements to the playoff simulations or optimization formulation. Once the optimization is constrained to a small number of teams, the selected players are likely to be the obvious high scoring players from those teams regardless of whether their expected values are estimated using a simple heuristic like this year or a more sophisticated machine learning model. Nevertheless, a stronger player value model would likely improve the overall robustness of the system so it remains an interesting objective for future work.  
+However, I suspect improvements in player value modelling will product smaller gains than improvements to the optimization formulation oplayoff simulations or playoff simulations. Once the optimization is constrained to a small number of teams, the selected players are likely to be the obvious high scoring players from those teams regardless of whether their expected values are estimated using a simple heuristic like this year or a more sophisticated machine learning model. Nevertheless, a stronger player value model would likely improve the overall robustness of the system so it remains an interesting objective for future work.  
 
 
 ## Closing Thoughts
 
 So... after all that work, I still didn't win. 
 
-While that is a bit of a bummer, I really enjoyed building this system from the ground up and putting my skills in software development, statistics, simulation, mathematical modelling, and optimization to the test (against the evidently superior hockey minds of my family).
+While that is a bit of a bummer, I really enjoyed building this system from the ground up and putting my skills in software development, statistics, simulation, mathematical modelling, and optimization to the test (against the evidently superior hockey minds of my family). I look forward to trying again next year!
 
 At the end of the day, this is just a fun family competition. I hope they do not mind too much that I am borderline cheating, even if I am still losing.
 
