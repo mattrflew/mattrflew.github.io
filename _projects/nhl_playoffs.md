@@ -170,7 +170,7 @@ $$
 R_A \gets R_A + K(S_A - E_A),
 $$
 
-and similarly for team $B$. The K-factor can be thought of as the sensitivity of the updates. It's magnitude is somewhat arbitrary, but for our purposes a constant value of $K=20$ will be assumed to be satisfactory.  
+and similarly for team $B$. The K-factor can be thought of as the sensitivity of the updates. Its magnitude is somewhat arbitrary, but for our purposes a constant value of $K=20$ will be assumed to be satisfactory.  
 
 
 ### Extensions on the Elo System
@@ -304,7 +304,7 @@ The table below summarizes the ten highest rated teams according to the Elo syst
 
 <hr style="border: none; background: none; margin: 5px 0;" />
 
-The ten highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game for the stronger team. The demonstrates the substantial uncertainty of game outcomes amongst even the strongest teams, motivating the use of Monte Carlo simulations rather than other strategies such as deterministic bracket prediction. For context, the lowest rated team at the end of the regular season were the Vancouver Canucks, with an Elo rating of approximately 1322.
+The ten highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game for the stronger team. This demonstrates the substantial uncertainty of game outcomes amongst even the strongest teams, motivating the use of Monte Carlo simulations rather than other strategies such as deterministic bracket prediction. For context, the lowest rated team at the end of the regular season was the Vancouver Canucks, with an Elo rating of approximately 1322.
 
 The figure below shows the final Elo rankings and final regular season standings for all teams.
 
@@ -374,7 +374,7 @@ def simulate_game(R_h, R_a, rng, h_adv=30):
 
 ### Simulating the Entire Playoffs
 
-With the ability to simulate an individual game, the next step is to simulate an entire Stalney Cup playoff bracket. Since each playoff matchup is a best of seven series, we first extend the game simulation to simulate an entire series using the standard 2-2-1-1-1 home ice format of the NHL. Games are simulated sequentially until one team reaches four wins, at which point the winner advances to the next round.
+With the ability to simulate an individual game, the next step is to simulate an entire Stanley Cup playoff bracket. Since each playoff matchup is a best of seven series, we first extend the game simulation to simulate an entire series using the standard 2-2-1-1-1 home ice format of the NHL. Games are simulated sequentially until one team reaches four wins, at which point the winner advances to the next round.
 
 At a high level, one playoff simulation follows the procedure below:
 
@@ -723,7 +723,7 @@ A more aggressive optimization strategy is only effective if the playoff simulat
 
 The current implementation estimates playoff fantasy point ability directly from regular season statistics on a per game basis. This is a bit naive as it assumes that a player's scoring rate remains unchanged in the playoffs, which is unlikely to hold in practice. I created some preliminary experiments with simple machine learning models which showed slight improvement in player value prediction over the current methodology, even with limited feature engineering. Additional development time could potentially improve this further. 
 
-However, I suspect improvements in player value modelling will product smaller gains than improvements to the optimization formulation or playoff simulations. Once the optimization is constrained to a small number of teams, the selected players are likely to be the obvious high scoring players from those teams regardless of whether their expected values are estimated using a simple heuristic like this year or a more sophisticated machine learning model. Nevertheless, a stronger player value model would likely improve the overall robustness of the system so it remains an interesting objective for future work.  
+However, I suspect improvements in player value modelling will produce smaller gains than improvements to the optimization formulation or playoff simulations. Once the optimization is constrained to a small number of teams, the selected players are likely to be the obvious high scoring players from those teams regardless of whether their expected values are estimated using a simple heuristic like this year or a more sophisticated machine learning model. Nevertheless, a stronger player value model would likely improve the overall robustness of the system so it remains an interesting objective for future work.  
 
 
 ## Closing Thoughts
