@@ -302,7 +302,7 @@ The table below summarizes the ten highest rated teams according to the Elo syst
 | MIN | 1544.06 | 9 | 7 |
 | PHI | 1542.90 | 10 | 10 |
 
-<br>
+<hr style="border: none; background: none; margin: 5px 0;" />
 
 The ten highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game for the stronger team. The demonstrates the substantial uncertainty of game outcomes amongst even the strongest teams, motivating the use of Monte Carlo simulations rather than other strategies such as deterministic bracket prediction. For context, the lowest rated team at the end of the regular season were the Vancouver Canucks, with an Elo rating of approximately 1322.
 
@@ -349,7 +349,7 @@ With the final Elo ratings calculated, simulating an individual game is straight
 
 
 ```python
-import numpy as 
+import numpy as np
 rng = np.random.default_rng(seed=123)
 
 def elo_compute_win_probability(R_h, R_a, h_adv=30):
@@ -594,7 +594,7 @@ Finally, with all of the components of the project combined, running the linear 
 |  |  |  |  | | | 
 |  |  |  |  | *Total Expected* | **330.52** |
 
-<br>
+<hr style="border: none; background: none; margin: 5px 0;" />
 
 **Projected Team Total:** **330.52 fantasy points**
 
@@ -611,7 +611,7 @@ The roster composition by team is summarized below.
 | TBL | 2 |
 | CAR | 2 |
 
-<br>
+<hr style="border: none; background: none; margin: 5px 0;" />
 
 The optimized roster, as expected, primarily consists of players from teams projected to play the greatest number of playoff games. For example, the five teams with the highest expected games contribute 14 of the 17 selected players. At the same time, the optimizer does not simply select players from the tournament favourites. Instead, it balances expected playoff games with individual scoring ability. A notable example is Nikita Kucherov, who has the highest expected fantasy value per game and was selected despite Tampa Bay having the fewest expected playoff games amongst the teams selected. 
 
@@ -644,7 +644,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 | G | Brandon Bussi | CAR | 13.22 | 4<b>*</b> | 12.20 | 5 | -7.20 |
 | | | | | **Total** | **330.52** | **209** | **-121.52** |
 
-<br>
+<hr style="border: none; background: none; margin: 5px 0;" />
 
 
 <b>*</b> Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs. 
@@ -660,7 +660,7 @@ A summary of the performance of the final roster is presented below.
 | Prediction Error | 121.52 |
 | Final Pool Rank | 13 / 38 |
 
-<br>
+<hr style="border: none; background: none; margin: 5px 0;" />
 
 
 The optimized roster was projected to score 330.52 fantasy points but ultimately scored 209 points, corresponding to an overestimation of approximately 122 fantasy points. This placed the roster 13th of 38 entries in the playoff pool. In the first and second rounds of the playoffs, my roster was consistently in the top five in the pool, largely due to the fact the roster contained high scoring players from many teams. While 13th is a respectable result, it demonstrates that there is considerable room for improvement in the modelling approach. For reference, the winning team in the hockey pool had a total of 254 points. 
