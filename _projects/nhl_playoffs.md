@@ -118,7 +118,7 @@ The processing of data was handled by scripts, which take the raw JSON files and
 These processed datasets form the foundation for the remainder of the project. 
 
 For more detail on the implementation and processing pipeline, the source code is available on <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/tree/main/nhl_pool/dataset" target="_blank" rel="noopener">
-GitHub <i class="fa-brands fa-github"></i>
+GitHub<i class="fa-brands fa-github"></i>
 </a>.
 
 
@@ -131,7 +131,7 @@ To simulate the playoffs, we require a measure of team strength. While regular s
 ## Measuring Team Strength via Elo Rating
 
 A notebook detailing the Elo implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/04_Elo_rating.ipynb" target="_blank" rel="noopener">
-here <i class="fa-brands fa-github"></i>
+here<i class="fa-brands fa-github"></i>
 </a>.
 
 ### The Elo Rating System
@@ -288,6 +288,8 @@ The final Elo ratings at the conclusion of the regular season are then used as t
 #### Results
 The table below summarizes the ten highest rated teams according to the Elo system for the 2025-2026 regular season. For comparison, the final regular season league ranking is also shown.
 
+<div align="center">
+
 | Team | Elo Rating | Elo Rank | Standings Rank |
 |:----:|-----------:|:--------:|:---------:|
 | CAR | 1617.92 | 1 | 2 |
@@ -300,6 +302,8 @@ The table below summarizes the ten highest rated teams according to the Elo syst
 | WSH | 1546.24 | 8 | 12 |
 | MIN | 1544.06 | 9 | 7 |
 | PHI | 1542.90 | 10 | 10 |
+
+</div>
 
 The ten highest rated teams finished the regular season with Elo ratings between approximately 1543 and 1618, indicating that the league's strongest teams were relatively closely matched. Using the Elo win probability formula defined previously, a 75 point rating advantage corresponds to only an approximately 61% chance of winning a single game for the stronger team. The demonstrates the substantial uncertainty of game outcomes amongst even the strongest teams, motivating the use of Monte Carlo simulations rather than other strategies such as deterministic bracket prediction. For context, the lowest rated team at the end of the regular season were the Vancouver Canucks, with an Elo rating of approximately 1322.
 
@@ -319,7 +323,7 @@ The Elo ratings provide the foundation for estimating game win probabilities thr
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
 A notebook detailing the playoff simulation framework is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb" target="_blank" rel="noopener">
-here <i class="fa-brands fa-github"></i>
+here<i class="fa-brands fa-github"></i>
 </a>.
 
 
@@ -475,7 +479,7 @@ One complication of this methodology is that players can be traded throughout th
 
 # Optimizing the Roster
  A notebook detailing the roster optimization implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
-here <i class="fa-brands fa-github"></i>
+here<i class="fa-brands fa-github"></i>
 </a>.
 
 
@@ -557,7 +561,7 @@ Ideally, the goalie selected for the roster would be the starting goalie for tha
 
 ### Solving the Optimization Problem
 The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value. The complete implementation is available in the accompanying <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
-notebook <i class="fa-brands fa-github"></i>
+notebook<i class="fa-brands fa-github"></i>
 </a>.
 
 
@@ -566,7 +570,7 @@ notebook <i class="fa-brands fa-github"></i>
 
 Finally, with all of the components of the project combined, running the linear programming optimizer yielded the following roster.
 
-<div style="text-align: center;">
+<div align="center">
 
 | Position | Player | Team | Expected Games | Fantasy Value/Game | Expected Points |
 |:--------:|:-------|:----:|---------------:|----------:|----------------:|
@@ -599,7 +603,7 @@ Finally, with all of the components of the project combined, running the linear 
 
 The roster composition by team is summarized below. 
 
-<div style="text-align: center;">
+<div align="center">
 
 | Team | Players Selected |
 |:----:|-----------------:|
@@ -618,7 +622,7 @@ The optimized roster, as expected, primarily consists of players from teams proj
 # Results
 
 With the 2026 Stanley Cup Playoffs complete, we can compare the model's projections against the actual fantasy points scored by the selected roster.
-<div style="text-align: center;">
+<div align="center">
 
 | Pos | Player | Team | Exp. Games | Actual Games | Exp. Points | Actual Points | Prediction Error |
 |:---:|:-------|:----:|-----------:|-------------:|------------:|--------------:|---------:|
@@ -651,7 +655,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 
 A summary of the performance of the final roster is presented below.
 
-<div style="text-align: center;">
+<div align="center">
 
 | Metric | Value |
 |:-------|------:|
