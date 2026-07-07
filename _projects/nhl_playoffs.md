@@ -69,7 +69,7 @@ Selecting a roster to maximize fantasy points requires answering three questions
 These questions naturally divide the project into major components which are discussed throughout this article.
 
 ## System Overview
-The system transforms raw NHL data (player statistics, team records, game results, etc.) into an optimized fantasy roster, given the above objectives and constraints. Each stage builds on the previous one, creating end-to-end analytics pipeline. A high level overview of the system is represented in the following diagram.
+The system transforms raw NHL data (player statistics, team records, game results, etc.) into an optimized fantasy roster, given the above objectives and constraints. Each stage builds on the previous one, creating an end-to-end analytics pipeline. A high level overview of the system is represented in the following diagram.
 
 <figure style="text-align: center;">
   <img
@@ -106,9 +106,9 @@ params = {
 data = api.get_team_roster_stats(params)
 ```
 
-The library first checks if the requested data already exists in a local cache. If so, the cached response is returned immediately. Otherwise, the request is sent to the NHL API, the response is stored as a compressed JSON file, and the downloaded data is returned. The caching system was created to avoid unnecessary network requests, as it can be timely collecting a large number of records.
+The library first checks if the requested data already exists in a local cache. If so, the cached response is returned immediately. Otherwise, the request is sent to the NHL API, the response is stored as a compressed JSON file, and the downloaded data is returned. The caching system was created to avoid unnecessary network requests, as it can be time consuming collecting a large number of records.
 
-The processing of data was handled by scripts, which take the raw JSON files and the nested API responses are flattened and standardized into tables such as:
+The processing of data was handled by scripts, which take the raw JSON files, flatten the nested API responses, and standardize them into tables such as:
 
 - games.csv
 - skaters.csv
@@ -180,7 +180,7 @@ In sports there is said to be a benefit to the home team when they play at their
 
 Examining the results of all regular season NHL games between 2010-2025 showed that the home team won 54.10% of the time, demonstrating a slight advantage to the home team. We can try to account for this in the Elo ratings by giving the home team a slight rating boost, $h_{adv}$.
 
-If we have two teams of equal strength, $R_A=R_B$, but the home team gets a boost of $h_{adv}$, then the expected home advantage with probablity is (if $A$ is home team):
+If we have two teams of equal strength, $R_A=R_B$, but the home team gets a boost of $h_{adv}$, then the expected win probability for the home team is (if $A$ is home team):
 
 $$
 E_H = \frac{1}{1 + 10 ^ {\frac{R_B - (R_A+h_{adv})}{400}}} = \frac{1}{1 + 10 ^ {\frac{-h_{adv}}{400}}},
@@ -228,7 +228,7 @@ $$
 
 #### Overtime and Shootout Wins/Losses
 
-A game going to overtime or shootout are indicators that is was a close game, therefore the rating updates should be smaller in magnitude to reflect this.
+A game going to overtime or shootout are indicators that it was a close game, therefore the rating updates should be smaller in magnitude to reflect this.
 
 We will use a simple factor of $M$ to implement this.
 
@@ -336,7 +336,7 @@ for a total 15 series, giving $2^{15}= 32,768$ possible playoff brackets without
 
 Of course, playoff series are far from a coin flip-type result. Stronger teams are more likely to advance, and each possible bracket has a different probability of occurring based on the competing team strengths. Rather than attempting to predict a single "correct" bracket, this project instead simulates the playoffs thousands of times using the Elo derived win probabilities for each matchup. 
 
-Aggregating the results of these simulations provides estimates of each team's probability of advancing through every playoff round, ultimately allowing us to estimate the expect number of playoff games played by every team.
+Aggregating the results of these simulations provides estimates of each team's probability of advancing through every playoff round, ultimately allowing us to estimate the expected number of playoff games played by every team.
 
 ### Monte Carlo Methods
 
@@ -662,7 +662,7 @@ A summary of the performance of the final roster is presented below.
 <hr style="border: none; background: none; margin: 5px 0;" />
 
 
-The optimized roster was projected to score 330.52 fantasy points but ultimately scored 209 points, corresponding to an overestimation of approximately 122 fantasy points. This placed the roster 13th of 38 entries in the playoff pool. In the first and second rounds of the playoffs, my roster was consistently in the top five in the pool, largely due to the fact the roster contained high scoring players from many teams. While 13th is a respectable result, it demonstrates that there is considerable room for improvement in the modelling approach. For reference, the winning team in the hockey pool had a total of 254 points. 
+The optimized roster was projected to score 330.52 fantasy points but ultimately scored 209 points, corresponding to an overestimation of approximately 122 fantasy points. This placed the roster 13th of 38 entries in the playoff pool. In the first and second rounds of the playoffs, my roster was consistently in the top five in the pool, largely due to the fact that the roster contained high scoring players from many teams. While 13th is a respectable result, it demonstrates that there is considerable room for improvement in the modelling approach. For reference, the winning team in the hockey pool had a total of 254 points. 
 
 One noteworthy observation is that replacing Brandon Bussi with Frederik Andersen (the two goalies for Carolina) would have increased the roster total to 223 fantasy points, tying for 3rd place in the playoff pool. This is unfortunately a limitation since starting goaltenders are not explicitly identified. Bussi and Andersen played 36 and 35 games respectively in the regular season for Carolina, and it was not announced who would primarily be starting playoff games prior to the first game. 
 
