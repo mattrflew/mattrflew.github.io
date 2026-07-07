@@ -566,7 +566,7 @@ notebook <i class="fa-brands fa-github"></i>
 
 Finally, with all of the components of the project combined, running the linear programming optimizer yielded the following roster.
 
-<div style="display: table; margin: 0 auto;">
+<div style="text-align: center;">
 
 | Position | Player | Team | Expected Games | Fantasy Value/Game | Expected Points |
 |:--------:|:-------|:----:|---------------:|----------:|----------------:|
@@ -592,13 +592,14 @@ Finally, with all of the components of the project combined, running the linear 
 | G | Brandon Bussi | CAR | 13.22 | 0.92 | **12.20** |
 |  |  |  |  | | | 
 |  |  |  |  | *Total Expected* | **330.52** |
+
 </div>
 
 **Projected Team Total:** **330.52 fantasy points**
 
 The roster composition by team is summarized below. 
 
-<div style="display: table; margin: 0 auto;">
+<div style="text-align: center;">
 
 | Team | Players Selected |
 |:----:|-----------------:|
@@ -609,6 +610,7 @@ The roster composition by team is summarized below.
 | MTL | 2 |
 | TBL | 2 |
 | CAR | 2 |
+
 </div>
 
 The optimized roster, as expected, primarily consists of players from teams projected to play the greatest number of playoff games. For example, the five teams with the highest expected games contribute 14 of the 17 selected players. At the same time, the optimizer does not simply select players from the tournament favourites. Instead, it balances expected playoff games with individual scoring ability. A notable example is Nikita Kucherov, who has the highest expected fantasy value per game and was selected despite Tampa Bay having the fewest expected playoff games amongst the teams selected. 
@@ -616,7 +618,7 @@ The optimized roster, as expected, primarily consists of players from teams proj
 # Results
 
 With the 2026 Stanley Cup Playoffs complete, we can compare the model's projections against the actual fantasy points scored by the selected roster.
-<div style="display: table; margin: 0 auto;">
+<div style="text-align: center;">
 
 | Pos | Player | Team | Exp. Games | Actual Games | Exp. Points | Actual Points | Prediction Error |
 |:---:|:-------|:----:|-----------:|-------------:|------------:|--------------:|---------:|
@@ -641,6 +643,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 | G | Scott Wedgewood | COL | 15.35 | 13 | 13.65 | 7 | -6.65 |
 | G | Brandon Bussi | CAR | 13.22 | 4<b>*</b> | 12.20 | 5 | -7.20 |
 | | | | | **Total** | **330.52** | **209** | **-121.52** |
+
 </div>
 
 
@@ -648,7 +651,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 
 A summary of the performance of the final roster is presented below.
 
-<div style="display: table; margin: 0 auto;">
+<div style="text-align: center;">
 
 | Metric | Value |
 |:-------|------:|
@@ -656,6 +659,7 @@ A summary of the performance of the final roster is presented below.
 | Actual Team Score | 209 |
 | Prediction Error | 121.52 |
 | Final Pool Rank | 13 / 38 |
+
 </div>
 
 
