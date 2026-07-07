@@ -1,0 +1,4 @@
+- `_projects`: Contains the article pages for the projects
+- `assets\projects`: Contains the figures/media for the projects
+- `_pages`: Contains the layouts for the webpages
+- `_archive`: Contains old/unused webpages that otherwise would go in `_pages`
