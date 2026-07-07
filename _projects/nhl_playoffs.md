@@ -27,7 +27,7 @@ This article focuses on the modelling decisions, methodology, and evaluation of 
 
 ## Introduction
 
-Every year, my family runs an NHL Stanley Cup playoff pool. Participants draft a fixed roster of players before the playoffs begin, and earn points based on their chosen player's performance throughout the postseason.
+Every year, my family runs an NHL Stanley Cup playoff pool. Participants draft a fixed roster of players before the playoffs begin, and earn points based on the performance of their chosen players throughout the postseason.
 
 At first glance, choosing the best roster seems simple enough: you pick the league's best players from the best teams. In reality, team performance is inherently hard to predict and individual player point generation depends heavily on how long their teams survive in the playoffs. For example, a star player whose team is eliminated in the first round is worth less than a middle of the pack player who makes it to the finals. This makes roster selection an interesting problem involving prediction, uncertainty, and optimization.
 
@@ -203,7 +203,7 @@ For playoff games over the same time frame the home team only won 51.31% of the 
 #### Goal Differential
 If a particular game was a blowout for example, we want the rating updates to reflect this as it could indicate one team is significantly stronger than the other. The [World Football Elo Ratings](https://en.wikipedia.org/wiki/World_Football_Elo_Ratings#Number_of_goals) have something called a "Goal Index", $G$, where the number of goals between the winning and losing teams is taken into account. Football (soccer) scores are typically lower than hockey, so we'll modify their update logic slightly. 
 
-For all regular season games in the dataset, I calculated the goal differential between the winning and losing teams and is visualized in the figure below.
+For all regular season games in the dataset, I calculated the goal differential between the winning and losing teams and the results are visualized in the figure below.
 
 
 <figure style="text-align: center;">
@@ -234,9 +234,9 @@ We will use a simple factor of $M$ to implement this.
 
 $$
 M = \begin{cases} 
-1 & \text{if game finish in regular time}  \\
-0.75 & \text{if game finish in overtime} \\
-0.5 & \text{if game finish in shootout}  \\
+1 & \text{if game finishes in regular time}  \\
+0.75 & \text{if game finishes in overtime} \\
+0.5 & \text{if game finishes in shootout}  \\
 \end{cases}
 $$
 
@@ -646,7 +646,7 @@ With the 2026 Stanley Cup Playoffs complete, we can compare the model's projecti
 <hr style="border: none; background: none; margin: 5px 0;" />
 
 
-<b>*</b> Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out be that team's starting goalie for most of the playoffs. 
+<b>*</b> Brandon Bussi only played in 4 playoff games, while his team, the Carolina Hurricanes, played 19. Frederik Andersen turned out to be that team's starting goalie for most of the playoffs. 
 
 A summary of the performance of the final roster is presented below.
 
@@ -664,7 +664,7 @@ A summary of the performance of the final roster is presented below.
 
 The optimized roster was projected to score 330.52 fantasy points but ultimately scored 209 points, corresponding to an overestimation of approximately 122 fantasy points. This placed the roster 13th of 38 entries in the playoff pool. In the first and second rounds of the playoffs, my roster was consistently in the top five in the pool, largely due to the fact that the roster contained high scoring players from many teams. While 13th is a respectable result, it demonstrates that there is considerable room for improvement in the modelling approach. For reference, the winning team in the hockey pool had a total of 254 points. 
 
-One noteworthy observation is that replacing Brandon Bussi with Frederik Andersen (the two goalies for Carolina) would have increased the roster total to 223 fantasy points, tying for 3rd place in the playoff pool. This is unfortunately a limitation since starting goaltenders are not explicitly identified. Bussi and Andersen played 36 and 35 games respectively in the regular season for Carolina, and it was not announced who would primarily be starting playoff games prior to the first game. 
+One noteworthy observation is that replacing Brandon Bussi with Frederik Andersen (the two main goalies for Carolina) would have increased the roster total to 223 fantasy points, tying for 3rd place in the playoff pool. This is unfortunately a limitation since starting goaltenders are not explicitly identified. Bussi and Andersen played 36 and 35 games respectively in the regular season for Carolina, and it was not announced who would primarily be starting playoff games prior to the first game. 
 
 
 The figure below compares the simulated expected number of playoff games with the actual number of games played for each playoff team (left), together with the corresponding prediction errors (right).
@@ -676,7 +676,7 @@ The figure below compares the simulated expected number of playoff games with th
     style="max-width: 100%; height: auto;">
 </figure>
 
-We see that the simulated expected number of playoff games tends to underestimate the teams that ultimately made deep playoff runs, most notably Vegas, Montreal, and Carolina in the figure above. This is reflected by the large positive errors shown in the right-hand panel. Conversely, many teams eliminated in earlier rounds have negative prediction errors, indicating that their playoff runs were overestimated. This is a consequence of the Monte Carlo simulation estimates the expected number of playoff games by averaging over many playoff brackets. As a result, the distribution of games played is compressed towards the middle. For example, Colorado was expected to play 15.4 games (the highest of any of the estimates) despite the fact that every Stanley Cup Finalist must necessarily play at least 16 games. Similarly, Los Angeles was the only team expected to play fewer than 7 games, even though 8 teams are guaranteed to be eliminated in the first round and therefore play at most 7 games. This averaging effect can systematically understate the fantasy value of players on teams that make unexpectedly deep playoff runs while overestimating the value of players whose teams exit early.
+We see that the simulated expected number of playoff games tends to underestimate the teams that ultimately made deep playoff runs, most notably Vegas, Montreal, and Carolina in the figure above. This is reflected by the large positive errors shown in the right-hand panel. Conversely, many teams eliminated in earlier rounds have negative prediction errors, indicating that their playoff runs were overestimated. This is a consequence of the Monte Carlo simulation estimating the expected number of playoff games by averaging over many playoff brackets. As a result, the distribution of games played is compressed towards the middle. For example, Colorado was expected to play 15.4 games (the highest of any of the estimates) despite the fact that every Stanley Cup Finalist must necessarily play at least 16 games. Similarly, Los Angeles was the only team expected to play fewer than 7 games, even though 8 teams are guaranteed to be eliminated in the first round and therefore play at most 7 games. This averaging effect can systematically understate the fantasy value of players on teams that make deep playoff runs while overestimating the value of players whose teams exit early.
 
 The figure below shows the fantasy point prediction error for every player selected in the optimized roster.
 
