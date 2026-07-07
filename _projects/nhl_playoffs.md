@@ -19,6 +19,8 @@ toc:
   </a>
 </p>
 
+This article focuses on the modelling decisions, methodology, and evaluation of the system I built and tested for the 2026 NHL Stanley Cup Playoffs. Links to the corresponding source code are provided throughout for readers interested in the implementation details.
+
 <!-- INTRO -->
 
 # Designing an Overly Complex Solution to Win a Family Competition 
@@ -37,8 +39,6 @@ This project is a system with the objective to:
 4. And most importantly, win the playoff pool (Bragging Rights).
 
 While doing this might break the spirit of a fun family competition, it provides for an interesting project. I have also consistently done poorly in this playoff pool, so I clearly need to change my old strategy of hurriedly choosing players the day before the deadline.
-
-This post will describe my approach to building this system for the 2026 NHL playoffs.
 
 ## The Optimization Problem
 The rules of the playoff pool are quite simple. Before the start of the Stanley Cup Playoffs, each participant selects a roster which cannot be changed for the remainder of the tournament. The players on the roster obtain fantasy points, which are summed together and the highest fantasy score wins the pool. 
@@ -117,7 +117,9 @@ The processing of data was handled by scripts, which take the raw JSON files and
 
 These processed datasets form the foundation for the remainder of the project. 
 
-For more detail on the implementation and processing pipeline, the source code is available on [GitHub](https://github.com/mattrflew/nhl-playoff-pool-optimizer/tree/main/nhl_pool/dataset).
+For more detail on the implementation and processing pipeline, the source code is available on <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/tree/main/nhl_pool/dataset" target="_blank" rel="noopener">
+GitHub <i class="fa-brands fa-github"></i>
+</a>.
 
 
 # Predicting the Playoffs Outcome
@@ -128,7 +130,9 @@ To simulate the playoffs, we require a measure of team strength. While regular s
 
 ## Measuring Team Strength via Elo Rating
 
-A notebook detailing the Elo implementation is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/04_Elo_rating.ipynb). 
+A notebook detailing the Elo implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/04_Elo_rating.ipynb" target="_blank" rel="noopener">
+here <i class="fa-brands fa-github"></i>
+</a>.
 
 ### The Elo Rating System
 
@@ -314,7 +318,10 @@ The Elo ratings provide the foundation for estimating game win probabilities thr
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
-A notebook detailing the playoff simulation framework is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb). 
+A notebook detailing the playoff simulation framework is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb" target="_blank" rel="noopener">
+here <i class="fa-brands fa-github"></i>
+</a>.
+
 
 We can begin this section by acknowledging how difficult it is to accurately predict playoff bracket winners due to the uncertainty associated with each series. Even under the simple assumptions that every playoff series is a fair coin flip, there are 
 
@@ -467,7 +474,10 @@ Here, $\mathbb{E}[\mathrm{SO}_i]$, $\mathbb{E}[W_i]$, and $\mathbb{E}[A_i]$ deno
 One complication of this methodology is that players can be traded throughout the regular season and may accumulate statistics for multiple teams. For the purposes of this project, a player's regular season statistics are aggregated across all teams they played for, while their playoff expected values are determined using the team on whose playoff roster they ultimately appear. This assumes that a player's scoring ability is independent of the team they played for during the regular season.
 
 # Optimizing the Roster
-A notebook detailing the roster optimization implementation is available [here](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb). 
+ A notebook detailing the roster optimization implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
+here <i class="fa-brands fa-github"></i>
+</a>.
+
 
 Using the expected player values derived in the previous section, we can formulate the fantasy roster selection as an optimization problem. Before doing so, one practical consideration must be addressed. Since player value is estimated on a per game basis, players who appeared in a small number of regular season games could have inflated expected values due to small sample sizes. For example, a player who records three points and played in only one game would appear to have a fantastic scoring rate despite having little evidence that rate is sustainable. 
 
@@ -546,7 +556,11 @@ where $G_T$ denotes the set of goalies on team $T$.
 Ideally, the goalie selected for the roster would be the starting goalie for that team.
 
 ### Solving the Optimization Problem
-The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value. The complete implementation is available in the accompanying [notebook](https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb).
+The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value. The complete implementation is available in the accompanying <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
+notebook <i class="fa-brands fa-github"></i>
+</a>.
+
+
 
 ## The Final Roster
 
