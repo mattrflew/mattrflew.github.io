@@ -170,8 +170,7 @@ $$
 R_A \gets R_A + K(S_A - E_A),
 $$
 
-and similarly for team $B$. The K-factor can be thought of as the sensitivity of the updates. Its magnitude is somewhat arbitrary, but for our purposes a constant value of $K=20$ will be assumed to be satisfactory.  
-
+and similarly for team $B$. The $K$ factor controls the sensitivity of the updates, with larger values producing larger rating changes after each game. A value of $K=20$ was chosen as a reasonable default, as it is consistent with values commonly used in Elo rating systems.
 
 ### Extensions on the Elo System
 The formulation above outlines the base Elo system, but a number of additions can be made to improve it.
