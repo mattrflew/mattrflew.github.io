@@ -558,11 +558,7 @@ where $G_T$ denotes the set of goalies on team $T$.
 Ideally, the goalie selected for the roster would be the starting goalie for that team.
 
 ### Solving the Optimization Problem
-The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value. The complete implementation is available in the accompanying <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
-notebook <i class="fa-brands fa-github"></i>
-</a>.
-
-
+The optimization model was implemented using SciPy's `scipy.optimize.milp` solver. The expected player values define the objective function, while the roster requirements and strategic constraints are represented as linear equality and inequality constraints. Since `milp` is formulated as a minimization problem, the objective coefficients are simply negated to maximize the expected fantasy value.
 
 ## The Final Roster
 
