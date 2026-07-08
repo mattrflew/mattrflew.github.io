@@ -130,7 +130,7 @@ To simulate the playoffs, we require a measure of team strength. While regular s
 
 ## Measuring Team Strength via Elo Rating
 
-A notebook detailing the Elo implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/04_Elo_rating.ipynb" target="_blank" rel="noopener">
+A notebook detailing the Elo implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/01_elo_rating.ipynb" target="_blank" rel="noopener">
 here <i class="fa-brands fa-github"></i>
 </a>.
 
@@ -320,7 +320,7 @@ The Elo ratings provide the foundation for estimating game win probabilities thr
 
 ## Simulating Playoff Brackets with Monte Carlo Methods
 
-A notebook detailing the playoff simulation framework is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/05_Monte_Carlo_bracket_simulations.ipynb" target="_blank" rel="noopener">
+A notebook detailing the playoff simulation framework is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/02_bracket_simulations.ipynb" target="_blank" rel="noopener">
 here <i class="fa-brands fa-github"></i>
 </a>.
 
@@ -476,7 +476,7 @@ Here, $\mathbb{E}[\mathrm{SO}_i]$, $\mathbb{E}[W_i]$, and $\mathbb{E}[A_i]$ deno
 One complication of this methodology is that players can be traded throughout the regular season and may accumulate statistics for multiple teams. For the purposes of this project, a player's regular season statistics are aggregated across all teams they played for, while their playoff expected values are determined using the team on whose playoff roster they ultimately appear. This assumes that a player's scoring ability is independent of the team they played for during the regular season.
 
 # Optimizing the Roster
- A notebook detailing the roster optimization implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_baseline_roster_optimizer.ipynb" target="_blank" rel="noopener">
+ A notebook detailing the roster optimization implementation is available <a href="https://github.com/mattrflew/nhl-playoff-pool-optimizer/blob/main/notebooks/03_roster_optimizer.ipynb" target="_blank" rel="noopener">
 here <i class="fa-brands fa-github"></i>
 </a>.
 
