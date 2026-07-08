@@ -10,7 +10,7 @@ related_publications: false
 ---
 
 <!-- Project Description -->
-This project formed the basis of my MSc dissertation in Computational Applied Mathematics at the University of Edinburgh, for which the dissertation was awarded a distinction. I developed and evaluated a **Kalman Filter-based microbubble tracking pipeline** for **Super-Resolution Ultrasound Imaging (SRUI)** using the [ULTRA-SR](https://ultra-sr.com/) challenge dataset. The full dissertation can be viewed as a PDF below. 
+This project formed the basis of my MSc dissertation in Computational Applied Mathematics at the University of Edinburgh, for which the dissertation was awarded a distinction. I developed and evaluated a Kalman Filter-based microbubble tracking pipeline for Super-Resolution Ultrasound Imaging (SRUI) using the [ULTRA-SR](https://ultra-sr.com/) challenge dataset. The full dissertation can be viewed as a PDF below. 
 
 <!-- PDF Download -->
 <p>
