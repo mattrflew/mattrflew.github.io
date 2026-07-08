@@ -29,7 +29,7 @@ This article focuses on the modelling decisions, methodology, and evaluation of 
 
 Every year, my family runs an NHL Stanley Cup playoff pool. Participants draft a fixed roster of players before the playoffs begin, and earn points based on the performance of their chosen players throughout the postseason.
 
-At first glance, choosing the best roster seems simple enough: you pick the league's best players from the best teams. In reality, team performance is inherently hard to predict and individual player point generation depends heavily on how long their teams survive in the playoffs. For example, a star player whose team is eliminated in the first round is worth less than a middle of the pack player who makes it to the finals. This makes roster selection an interesting problem involving prediction, uncertainty, and optimization.
+At first glance, choosing the best roster can seem simple enough: you pick the league's best players from the best teams. In reality, team performance is inherently hard to predict and individual player point generation depends heavily on how long their teams survive in the playoffs. For example, a star player whose team is eliminated in the first round is worth less than a middle of the pack player who makes it to the finals. This makes roster selection an interesting problem involving prediction, uncertainty, and optimization.
 
 This project is a system with the objective to:
 
@@ -141,7 +141,7 @@ The [Elo rating system](https://en.wikipedia.org/wiki/Elo_rating_system) is a me
 #### Algorithms
 The base Elo system is defined by two algorithms.
 
-The expected probability for team A, $E_A$, to win given the ratings of teams $R_A$ and $R_B$ is:
+The expected probability for team $A$, $E_A$, to win given the ratings of teams $R_A$ and $R_B$ is:
 
 $$
 E_A = \frac{1}{1 + 10 ^ {\frac{R_B - R_A}{400}}},
@@ -214,7 +214,7 @@ For all regular season games in the dataset, I calculated the goal differential 
 </figure>
 
 
-We see that approximately 65% of games have a 1-2 goal differential, and up to 75% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparatively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
+We see that approximately 65% of games have a 1-2 goal differential, and up to 85% of values are up to a goal differential of 3. Goal differentials greater than 6 are comparatively rare. Based on this empirical distribution, we can implement some logic for our goal index, $G$, as a function of the absolute goal differential, $N$.
 
 $$
 G = \begin{cases} 
@@ -417,7 +417,7 @@ It is also interesting that the ordering of teams by Stanley Cup win probability
 # Estimating Player Value
 Having estimated each team's expected number of playoff games, we can now estimate the expected fantasy value of every player. This completes the predictive component of the pipeline and provides the inputs required for roster optimization.
 
-For simplicity, we assume that each player will maintain their regular season scoring rate per game throughout the playoffs. While individual performance can certainly improve or decline in the postseason, regular season statistics provide a reasonable basis for expected production. Only statistics from the current regular season are used to estimate player performance. In this project, the primary source of uncertainty is assumed to be the number of playoff games played rather than changes in individual player performance. These simplifying assumptions are considered sufficient for the purposes of this model.
+For simplicity, we assume that each player will maintain their regular season scoring rate per game throughout the playoffs. While individual performance can certainly improve or decline in the postseason, regular season statistics provide a reasonable basis for expected production. Only statistics from the current regular season are used to estimate player performance. The per game expected value rates are then multiplied by the expected number of games played for the respective teams to obtain a player's playoff expected value. We will more formally define this below.
 
 Per the rules of the fantasy hockey pool, as explained in a previous [section](#the-optimization-problem), skaters and goalies have different point systems. 
 
@@ -426,7 +426,7 @@ The scoring for skaters (forwards and defencemen) is defined as:
 - Goals: 2 points
 - Assists: 1 point
 
-The expected fantasy value, $\mathbb{E}[v_i]$, of skater $i$ is defined as
+The expected playoff fantasy value, $\mathbb{E}[v_i]$, of skater $i$ is defined as
 
 $$
 \mathbb{E}[v_i] = 2\,\mathbb{E}[G_i] + \mathbb{E}[A_i],
@@ -450,7 +450,7 @@ The scoring for goalies is defined as:
 - Assists: 1 point
 - Shutouts: 2 points
 
-Similarly, the expected fantasy value, $\mathbb{E}[v_i]$, of goalie $i$ is defined as
+Similarly, the expected playoff fantasy value, $\mathbb{E}[v_i]$, of goalie $i$ is defined as
 
 $$
 \mathbb{E}[v_i] = 2\,\mathbb{E}[\mathrm{SO}_i] + \mathbb{E}[W_i] + \mathbb{E}[A_i],
@@ -496,7 +496,9 @@ Participants select a fixed roster of players at the beginning of the playoff co
   - 6 defencemen
 - 2 goalies
 
-We define a binary decision variable
+### Decision Variables
+
+For each player $i \in P$, where $P$ denotes the set of all players on playoff rosters, define the binary variable
 
 $$
 x_i =
@@ -506,6 +508,7 @@ x_i =
 \end{cases}
 $$
 
+
 ### Objective Function
 
 The objective is simply to maximize the total expected fantasy points accumulated by the roster.
@@ -514,13 +517,13 @@ $$
 \text{max}\sum_i \mathbb{E}[v_i]x_i.
 $$
 
-Let $\mathbb{E}[v_i]$ denote the expected fantasy value of player $i$, as defined in the [Estimating Player Value](#estimating-player-value) section.
+Here, $\mathbb{E}[v_i]$ is the expected fantasy value of player $i$, as defined in the [Estimating Player Value](#estimating-player-value) section.
 
 ### Constraints
 The number of players in each position are our primary constraints, which can be written out as follows:
 
 $$
-\sum_i x_i = 17,
+\sum_{i \in P} x_i = 17,
 $$
 
 $$
@@ -535,7 +538,12 @@ $$
 \sum_{i \in G} x_i = 2,
 $$
 
-where $F$, $D$, and $G$ denotes the respective sets of forwards, defencemen, and goalies.  
+$$
+x_i \in \{0,1\}, \quad \forall i \in P,
+$$
+
+
+where $P$, $F$, $D$, and $G$ denote the respective sets of all players, forwards, defencemen, and goalies.  
 
 Additional strategic constraints can also be added into the optimization model. 
 
@@ -545,7 +553,7 @@ $$
 \sum_{i \in T} x_i \leq M_T \qquad \forall\ T,
 $$
 
-where $T$ denotes the set of players belonging to a given team, and $M_T$ is the maximum number of players permitted from that team. A modelling choice of $M_T=8$ was implemented.
+where $T$ represents the set of players belonging to a given team, and $M_T$ is the maximum number of players permitted from that team. A modelling choice of $M_T=8$ was implemented.
 
 Furthermore, an additional constraint was imposed to prevent the optimizer from selecting more than one goalie from the same team. 
 
@@ -553,7 +561,7 @@ $$
 \sum_{i \in G_T} x_i \leq 1 \qquad \forall\ T,
 $$
 
-where $G_T$ denotes the set of goalies on team $T$.
+where $G_T$ represents the set of goalies on team $T$.
 
 Ideally, the goalie selected for the roster would be the starting goalie for that team.
 
